@@ -6,7 +6,7 @@ function prompt_lxc_ID {
             exit 1
         else
             while [ -z "$id" ]; do
-            whiptail --msgbox "LXC cannot be blank. Please try again." 8 39 --title "Input Error"
+            whiptail --msgbox "LXC cannot be blank1. Please try again." 8 39 --title "Input Error"
             prompt_lxc_ID
         done
     fi
