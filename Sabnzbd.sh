@@ -38,7 +38,6 @@ echo "Starting sabnzbd service in container $current_lxc_id..."
 pct exec $current_lxc_id systemctl start sabnzbd
 
 
-
 # Remove the currentid.sh script
 echo "Removing /etc/pve/lxc/currentid.sh..."
 rm /etc/pve/lxc/currentid.sh
