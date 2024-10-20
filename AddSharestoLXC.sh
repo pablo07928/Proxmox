@@ -1,3 +1,4 @@
+#!/bin/bash
 function prompt_lxc_ID {
     id=$(whiptail --inputbox "Please enter the LXC ID:" 8 39 --title "LXC Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
