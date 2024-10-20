@@ -10,5 +10,5 @@ function prompt_lxc_ID {
         done
     fi
 }
-
+prompt_lxc_ID
 { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
