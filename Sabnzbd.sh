@@ -18,3 +18,4 @@ pct exec $current_lxc_id iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDI
 pct exec $current_lxc_id systemctl start sabnzbd
 pct exec $current_lxc_id reboot now
 rm /etc/pve/lxc/currentid.sh
+
