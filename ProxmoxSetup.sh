@@ -5,13 +5,14 @@
 function prompt_username {
     user=$(whiptail --inputbox "Please enter the username:" 8 39 --title "Username Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
-        echo "Operation cancelled. Exiting..."
-        exit 1
+            echo "Operation cancelled. Exiting..."
+            exit 1
+           
         else
-        while [ -z "$user" ]; do
-        whiptail --msgbox "Username cannot be blank. Please try again." 8 39 --title "Input Error"
-        prompt_username
-done
+            while [ -z "$user" ]; do
+            whiptail --msgbox "Username cannot be blank. Please try again." 8 39 --title "Input Error"
+            prompt_username
+        done
     fi
 }
 
