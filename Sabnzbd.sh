@@ -4,6 +4,7 @@
 #bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
 
 bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh)"
+echo "load source"
 source /etc/pve/lxc/currentid.sh
 echo "the current id is:"$current_lxc_id
 pct exec $current_lxc_id systemctl stop sabnzbd
