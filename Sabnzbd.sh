@@ -16,7 +16,7 @@ pct exec $current_lxc_id systemctl stop sabnzbd
 
 # Copy sabnzbd configuration file
 echo "Copying sabnzbd.ini to container $current_lxc_id..."
-pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/sabnzbd/sabnzbd.ini
+pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini
 
 # Install iptables in the container
 echo "Installing iptables in container $current_lxc_id..."
