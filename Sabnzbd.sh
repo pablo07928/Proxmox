@@ -11,3 +11,4 @@ pct exec $currrent_lxc_id apt install iptables -y
 pct exec $currrent_lxc_id iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
 pct exec $currrent_lxc_id systemctl start sabnzbd
 pct exec $currrent_lxc_id reboot now
+rm /etc/pve/lxc/currentid.sh
