@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "v9"
+echo "v10"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
@@ -67,22 +67,18 @@ sleep 20
 pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
 # Install iptables in the container
 echo "Installing iptables in container $current_lxc_id..."
-pct exec $current_lxc_id pct exec $current_lxc_id -- bash -c "apt install iptables -y"
+pct exec $current_lxc_id -- bash -c "apt install iptables -y"
 
 # Add iptables rule to redirect port 80 to port 8080
 echo "Adding iptables rule for port redirection in container $current_lxc_id..."
-pct exec $current_lxc_id pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
-sleep 60
+pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
+
 # Start sabnzbd service
 echo "Starting sabnzbd service in container $current_lxc_id..."
-pct exec $current_lxc_id pct exec $current_lxc_id -- bash -c "systemctl daemon-reload"
+pct exec $current_lxc_id -- bash -c "systemctl daemon-reload"
 pct exec $current_lxc_id systemctl start sabnzbd
 
 
-# Remove the currentid.sh script
-echo "Removing /etc/pve/lxc/currentid.sh..."
-rm /etc/pve/lxc/currentid.sh
-
 # Reboot the container
 echo "Rebooting container $current_lxc_id..."
-#pct exec $current_lxc_id reboot now
+pct exec $current_lxc_id reboot now
