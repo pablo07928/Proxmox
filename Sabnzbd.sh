@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "v5"
+echo "v6"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
@@ -36,7 +36,7 @@ echo "the new container id is:$current_lxc_id"
 #source /tmp/currentid.sh
 
 # Clean up temporary files
-rm sorted_file1_vmids.txt sorted_file2_vmids.txt
+#rm sorted_file1_vmids.txt sorted_file2_vmids.txt
 
 
 wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>>/tmp/AddSharestoLXC.sh
