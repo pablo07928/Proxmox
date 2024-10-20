@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "v4"
+echo "v5"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
@@ -29,19 +29,21 @@ awk 'NR>1 {print $1}' "$FILE1" | sort > sorted_file1_vmids.txt
 awk 'NR>1 {print $1}' "$FILE2" | sort > sorted_file2_vmids.txt
 
 # Use comm to find extra VM IDs in the second file
-comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt>> /tmp/difference
+current_lxc_id=$(comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt)
+
+echo "the new container id is:$current_lxc_id"
+
+#source /tmp/currentid.sh
 
 # Clean up temporary files
 rm sorted_file1_vmids.txt sorted_file2_vmids.txt
 
 
-bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh)"
+wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>>/tmp/AddSharestoLXC.sh
+bash -c "chmod +x /tmp/AddSharestoLXC.sh"
+bash -c "/tmp/AddSharestoLXC.sh $current_lxc_id"
 
 
-
-# Load the current LXC ID
-echo "Loading source...v3"
-source /etc/pve/lxc/currentid.sh
 
 # Display the current LXC ID
 echo "The current LXC ID is: $current_lxc_id"
