@@ -7,6 +7,11 @@ function prompt_username {
         if [ $? -ne 0 ]; then
         echo "Operation cancelled. Exiting..."
         exit 1
+        else
+        while [ -z "$user" ]; do
+        whiptail --msgbox "Username cannot be blank. Please try again." 8 39 --title "Input Error"
+        prompt_username
+done
     fi
 }
 
