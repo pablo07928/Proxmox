@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "v7"
+echo "v8"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
@@ -41,13 +41,14 @@ wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>/tm
 bash -c "chmod +x /tmp/AddSharestoLXC.sh"
 bash -c "/tmp/AddSharestoLXC.sh $current_lxc_id"
 
+pct exec $current_lxc_id reboot now
 
 
 # Display the current LXC ID
 echo "The current LXC ID is: $current_lxc_id"
 
 # Stop sabnzbd service
-echo "Stopping sabnzbd service in container $current_lxc_id..."
+echo "Stopping sabnzbd service in container $current_lxc_id...pct exec $current_lxc_id systemctl stop sabnzbd"
 pct exec $current_lxc_id systemctl stop sabnzbd
 
 sleep 15
