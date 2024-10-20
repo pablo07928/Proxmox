@@ -13,3 +13,6 @@ function prompt_lxc_ID {
 }
 prompt_lxc_ID
 { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
+{ echo 'mp0: /media/media/,mp=/edia/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
+{ echo 'mp0: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
+{ echo 'mp0: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
