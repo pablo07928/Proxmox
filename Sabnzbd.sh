@@ -4,7 +4,7 @@
 bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh)"
 
 # Load the current LXC ID
-echo "Loading source..."
+echo "Loading source...v1"
 source /etc/pve/lxc/currentid.sh
 
 # Display the current LXC ID
