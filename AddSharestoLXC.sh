@@ -12,7 +12,6 @@ function prompt_lxc_ID {
     fi
 }
 prompt_lxc_ID
-
 LXC_CONF="/etc/pve/lxc/$id.conf"
 # Add a comment for 'media-shares' if not already present
 if ! grep -q 'media-shares' "$LXC_CONF"; then
