@@ -7,7 +7,6 @@ function prompt_username {
         if [ $? -ne 0 ]; then
             echo "Operation cancelled. Exiting..."
             exit 1
-           
         else
             while [ -z "$user" ]; do
             whiptail --msgbox "Username cannot be blank. Please try again." 8 39 --title "Input Error"
@@ -20,16 +19,28 @@ function prompt_username {
 function prompt_userpassword {
     password=$(whiptail --inputbox "Please enter the password:" 8 39 --title "Password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
-        echo "Operation cancelled. Exiting..."
-        exit 1
+            echo "Operation cancelled. Exiting..."
+            exit 1
+        else
+            # Keep prompting until a username is provided
+            while [ -z "$password" ]; do
+            whiptail --msgbox "password cannot be blank. Please try again." 8 39 --title "Input Error"
+            prompt_userpassword
+        done
     fi
 }
 # Function to prompt for NFS
 function prompt_nfsserver {
     nfsserver=$(whiptail --inputbox "Please enter the NFS Server    :" 8 39 --title "NFS Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
-        echo "Operation cancelled. Exiting..."
-        exit 1
+            echo "Operation cancelled. Exiting..."
+            exit 1
+        else
+            # Keep prompting until a username is provided
+            while [ -z "$nfsserver" ]; do
+            whiptail --msgbox "NFS Server cannot be blank. Please try again." 8 39 --title "Input Error"
+            prompt_nfsserver
+        done
     fi
 }
 
@@ -37,34 +48,10 @@ function prompt_nfsserver {
 
 # Initial prompt
 prompt_username
-
-# Keep prompting until a username is provided
-while [ -z "$user" ]; do
-    whiptail --msgbox "Username cannot be blank. Please try again." 8 39 --title "Input Error"
-    prompt_username
-done
-
-
 # Initial prompt
 prompt_userpassword
-
-# Keep prompting until a username is provided
-while [ -z "$password" ]; do
-    whiptail --msgbox "password cannot be blank. Please try again." 8 39 --title "Input Error"
-    prompt_userpassword
-done
-
 # Initial prompt
 prompt_nfsserver
-
-# Keep prompting until a username is provided
-while [ -z "$nfsserver" ]; do
-    whiptail --msgbox "NFS Server cannot be blank. Please try again." 8 39 --title "Input Error"
-    prompt_nfsserver
-done
-
-
-
 
 # Create user with a home directory
 useradd -m $user
