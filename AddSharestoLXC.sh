@@ -37,4 +37,4 @@ fi
 
 echo current_lxc_id=$id>>/etc/pve/lxc/currentid.sh
 
-echo "finished"
+echo "finished adding shares"
