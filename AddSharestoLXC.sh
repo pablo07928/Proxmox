@@ -12,7 +12,8 @@ function prompt_lxc_ID {
     fi
 }
 prompt_lxc_ID
-    
+
+LXC_CONF="/etc/pve/lxc/$id.conf"
 # Add a comment for 'media-shares' if not already present
 if ! grep -q 'media-shares' "$LXC_CONF"; then
     echo '#media-shares' | tee -a "$LXC_CONF"
@@ -34,3 +35,5 @@ fi
 if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
     echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
 fi
+
+echo "finished"
