@@ -21,7 +21,8 @@ echo "renaming sabnzbd.ini to container $current_lxc_id..."
 pct exec $current_lxc_id mv /root/.sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_orig
 
 echo "Copying sabnzbd.ini to container $current_lxc_id..."
-pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini
+pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_new
+pct exec $current_lxc_id cp /root/.sabnzbd/sabnzbd.ini_new /root/.sabnzbd/sabnzbd.ini
 
 # Install iptables in the container
 echo "Installing iptables in container $current_lxc_id..."
