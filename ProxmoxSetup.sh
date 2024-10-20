@@ -3,16 +3,16 @@
 # Function to prompt for username
 # Function to prompt for username
 function prompt_username {
-    user=$(whiptail --inputbox "Please enter the username:" 8 39 --title "Username Input" 3>&1 1>&2 2>&3)
+    user=$(whiptail --inputbox "Please enter the username:" 8 39 --title "Username Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
 }
 
 # Function to prompt for PW
 function prompt_userpassword {
-    password=$(whiptail --inputbox "Please enter the password:" 8 39 --title "Password Input" 3>&1 1>&2 2>&3)
+    password=$(whiptail --inputbox "Please enter the password:" 8 39 --title "Password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
 }
 # Function to prompt for NFS
 function prompt_nfsserver {
-    nfsserver=$(whiptail --inputbox "Please enter the NFS Server    :" 8 39 --title "Username Input" 3>&1 1>&2 2>&3)
+    nfsserver=$(whiptail --inputbox "Please enter the NFS Server    :" 8 39 --title "NFS Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
 }
 
 
@@ -170,4 +170,4 @@ systemctl daemon-reload
 
 mount -a
 
-echo "User $username created and configured successfully."
+echo "User $user created and configured successfully."
