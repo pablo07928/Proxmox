@@ -35,6 +35,6 @@ if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
     echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
 fi
 
-echo current_lxc_id=$id >>/etc/pve/lxc/currentid.sh
+echo current_lxc_id=$id>>/etc/pve/lxc/currentid.sh
 
 echo "finished"
