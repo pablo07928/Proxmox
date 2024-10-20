@@ -18,6 +18,7 @@ sleep 15
 # Copy sabnzbd configuration file
 
 echo "renaming sabnzbd.ini to container $current_lxc_id..."
+pct exec $current_lxc_id rm /root/.sabnzbd/sabnzbd.ini_orig
 pct exec $current_lxc_id mv /root/.sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_orig
 
 echo "Copying sabnzbd.ini to container $current_lxc_id..."
