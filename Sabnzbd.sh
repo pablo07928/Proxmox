@@ -14,7 +14,12 @@ echo "The current LXC ID is: $current_lxc_id"
 echo "Stopping sabnzbd service in container $current_lxc_id..."
 pct exec $current_lxc_id systemctl stop sabnzbd
 
+sleep 15
 # Copy sabnzbd configuration file
+
+echo "renaming sabnzbd.ini to container $current_lxc_id..."
+pct exec $current_lxc_id mv /root/.sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_orig
+
 echo "Copying sabnzbd.ini to container $current_lxc_id..."
 pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini
 
