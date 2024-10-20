@@ -4,3 +4,6 @@ bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/ProxmoxSet
 
 bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh)"
 
+
+Sonnar install:
+bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/Sabnzbd.sh)"
