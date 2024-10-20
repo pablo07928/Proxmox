@@ -43,7 +43,7 @@ bash -c "/tmp/AddSharestoLXC.sh $current_lxc_id"
 
 pct exec $current_lxc_id reboot now
 
-
+sleep 60
 # Display the current LXC ID
 echo "The current LXC ID is: $current_lxc_id"
 
