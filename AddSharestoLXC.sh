@@ -37,4 +37,5 @@ if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
 fi
 
 export currrent_lxc_id=$id
+echo "current lxc id:"$currrent_lxc_id
 echo "finished"
