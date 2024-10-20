@@ -1,16 +1,14 @@
 #!/bin/bash
-echo "v6"
+echo "v7"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
-pct list >>/tmp/prevms.txt
+pct list >/tmp/prevms.txt
 
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
 # Download and execute the AddSharestoLXC.sh script
 
-pct list >>/tmp/postvms.txt
-
-#!/bin/bash
+pct list >/tmp/postvms.txt
 
 # Define the input files
 # Check if the input files exist
@@ -30,7 +28,7 @@ awk 'NR>1 {print $1}' "$FILE2" | sort > sorted_file2_vmids.txt
 
 # Use comm to find extra VM IDs in the second file
 current_lxc_id=$(comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt)
-
+comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt>difference
 echo "the new container id is:$current_lxc_id"
 
 #source /tmp/currentid.sh
@@ -39,7 +37,7 @@ echo "the new container id is:$current_lxc_id"
 #rm sorted_file1_vmids.txt sorted_file2_vmids.txt
 
 
-wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>>/tmp/AddSharestoLXC.sh
+wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>/tmp/AddSharestoLXC.sh
 bash -c "chmod +x /tmp/AddSharestoLXC.sh"
 bash -c "/tmp/AddSharestoLXC.sh $current_lxc_id"
 
