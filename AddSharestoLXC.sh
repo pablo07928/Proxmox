@@ -15,12 +15,14 @@ prompt_lxc_ID
 
 if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
     
+if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
     { echo '#media-shares' ; } | tee -a /etc/pve/lxc/$id.conf
     { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp0: /media/media/,mp=/media/media' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp0: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp0: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
-
+    { echo 'mp1: /media/media/,mp=/media/media' ; } | tee -a /etc/pve/lxc/$id.conf
+    { echo 'mp2: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
+    { echo 'mp3: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
 fi
+
+
 
 
