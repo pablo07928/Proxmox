@@ -20,7 +20,7 @@ pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sa
 
 # Install iptables in the container
 echo "Installing iptables in container $current_lxc_id..."
-pct exec $current_lxc_id apt install iptables -y
+pct exec $current_lxc_id apt install iptables 
 
 # Add iptables rule to redirect port 80 to port 8080
 echo "Adding iptables rule for port redirection in container $current_lxc_id..."
