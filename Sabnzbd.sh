@@ -22,6 +22,7 @@ pct exec $current_lxc_id rm /root/.sabnzbd/sabnzbd.ini_orig
 pct exec $current_lxc_id mv /root/.sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_orig
 
 echo "Copying sabnzbd.ini to container $current_lxc_id..."
+pct exec $current_lxc_id rm /root/.sabnzbd/sabnzbd.ini_new
 pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_new
 pct exec $current_lxc_id cp /root/.sabnzbd/sabnzbd.ini_new /root/.sabnzbd/sabnzbd.ini
 sleep 20
@@ -31,8 +32,8 @@ pct exec $current_lxc_id apt install iptables
 
 # Add iptables rule to redirect port 80 to port 8080
 echo "Adding iptables rule for port redirection in container $current_lxc_id..."
-pct exec $current_lxc_id iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-sleep 20
+# pct exec $current_lxc_id iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+sleep 60
 # Start sabnzbd service
 echo "Starting sabnzbd service in container $current_lxc_id..."
 pct exec $current_lxc_id systemctl start sabnzbd
