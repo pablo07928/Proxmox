@@ -5,7 +5,7 @@ function prompt_lxc_ID {
             echo "Operation cancelled. Exiting..."
             exit 1
         else
-            while [ -z "$user" ]; do
+            while [ -z "$id" ]; do
             whiptail --msgbox "LXC cannot be blank. Please try again." 8 39 --title "Input Error"
             prompt_lxc_ID
         done
