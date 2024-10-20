@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "v4"
 FILE1="/tmp/prevms.txt"
 FILE2="/tmp/postvms.txt"
 
