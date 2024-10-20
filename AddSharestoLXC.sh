@@ -11,7 +11,14 @@ function prompt_lxc_ID {
         done
     fi
 }
-prompt_lxc_ID
+
+#check if param was provided and bypass asking for it if it does
+if [ $# -eq 1 ]; then
+    id="$1"
+else
+    prompt_lxc_ID
+fi
+
 LXC_CONF="/etc/pve/lxc/$id.conf"
 # Add a comment for 'media-shares' if not already present
 if ! grep -q 'media-shares' "$LXC_CONF"; then
