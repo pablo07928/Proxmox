@@ -22,7 +22,8 @@ if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
     { echo 'mp0: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
 
     else
-    echo 'Shares Already Present'
+    echo "Shares Already Present"
+    exit 0
 
 fi
 
