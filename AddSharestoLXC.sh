@@ -12,17 +12,25 @@ function prompt_lxc_ID {
     fi
 }
 prompt_lxc_ID
-
-if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
     
-if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
-    { echo '#media-shares' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp1: /media/media/,mp=/media/media' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp2: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
-    { echo 'mp3: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
+# Add a comment for 'media-shares' if not already present
+if ! grep -q 'media-shares' "$LXC_CONF"; then
+    echo '#media-shares' | tee -a "$LXC_CONF"
 fi
 
+# Check each mount point and append if not present
+if ! grep -q 'mp0: /media/amedia' "$LXC_CONF"; then
+    echo 'mp0: /media/amedia/,mp=/media/amedia' | tee -a "$LXC_CONF"
+fi
 
+if ! grep -q 'mp1: /media/media' "$LXC_CONF"; then
+    echo 'mp1: /media/media/,mp=/media/media' | tee -a "$LXC_CONF"
+fi
 
+if ! grep -q 'mp2: /media/nzb' "$LXC_CONF"; then
+    echo 'mp2: /media/nzb/,mp=/media/nzb' | tee -a "$LXC_CONF"
+fi
 
+if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
+    echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
+fi
