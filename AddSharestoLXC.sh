@@ -14,8 +14,8 @@ function prompt_lxc_ID {
 prompt_lxc_ID
 
 if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
-    echo '# media-shares' >>/etc/pve/lxc/$id.conf
-
+    
+    { echo '#media-shares' ; } | tee -a /etc/pve/lxc/$id.conf
     { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
     { echo 'mp0: /media/media/,mp=/edia/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
     { echo 'mp0: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
@@ -23,7 +23,7 @@ if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
 
     else
     Echo'Shares Already Present"
-    
+
 fi
 
 
