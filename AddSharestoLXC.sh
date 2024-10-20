@@ -36,4 +36,5 @@ if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
     echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
 fi
 
+export currrent_lxc_id=$id
 echo "finished"
