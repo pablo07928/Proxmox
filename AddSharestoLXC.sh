@@ -12,7 +12,18 @@ function prompt_lxc_ID {
     fi
 }
 prompt_lxc_ID
-{ echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
-{ echo 'mp0: /media/media/,mp=/edia/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
-{ echo 'mp0: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
-{ echo 'mp0: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
+
+if ! grep -q 'media-shares' /etc/pve/lxc/$id.conf; then
+    echo '# media-shares' >>/etc/pve/lxc/$id.conf
+
+    { echo 'mp0: /media/amedia/,mp=/media/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
+    { echo 'mp0: /media/media/,mp=/edia/amedia' ; } | tee -a /etc/pve/lxc/$id.conf
+    { echo 'mp0: /media/nzb/,mp=/media/nzb' ; } | tee -a /etc/pve/lxc/$id.conf
+    { echo 'mp0: /media/scripts/,mp=/media/scripts' ; } | tee -a /etc/pve/lxc/$id.conf
+
+    else
+    Echo'Shares Already Present"
+    
+fi
+
+
