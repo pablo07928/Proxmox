@@ -1,6 +1,6 @@
 #!/bin/bash
 clear
-echo "v12"
+echo "v14"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
@@ -22,7 +22,7 @@ else
     echo "Directory $temp_root does not exist."
 fi
  
-# mkdir $temp_root
+mkdir $temp_root
 
 # # Defaults
 # FILE1="$temp_root/prevms.txt"
