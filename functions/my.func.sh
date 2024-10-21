@@ -55,6 +55,7 @@ export $extra_password
 }
 
 
+
 prepare_folder() {
     if [ -d "$container_install_folder" ]; then
         msg_ok "Directory $container_install_folder exists. Deleting..."
