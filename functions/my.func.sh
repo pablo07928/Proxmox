@@ -25,3 +25,28 @@ find_container_ID() {
     # Clean up temporary files
     rm sorted_file1_vmids.txt sorted_file2_vmids.txt
 }
+
+extra_admin_account() { 
+ extra_admin=$(whiptail --inputbox "Please enter  second admin account:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+        if [ $? -ne 0 ]; then
+            echo "Operation cancelled. Exiting..."
+            exit 1
+        else
+            while [ -z "$extra_admin" ]; do
+            whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
+            extra_admin_account
+        done
+    fi
+     extra_admin_password=$(whiptail --inputbox "Please enter  second admin password:" 8 39 --title "password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+        if [ $? -ne 0 ]; then
+            echo "Operation cancelled. Exiting..."
+            exit 1
+        else
+            while [ -z "$extra_admin_password" ]; do
+            whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
+            extra_admin_password
+        done
+    fi
+export $extra_admin
+export $extra_admin_password
+}
