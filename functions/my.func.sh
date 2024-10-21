@@ -49,7 +49,7 @@ extra_admin_password() {
             while [ -z "$extra_password" ]; do
             whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
             extra_admin_password
-        d
+        done
     fi
 export $extra_password
 }
