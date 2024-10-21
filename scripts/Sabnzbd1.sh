@@ -13,14 +13,14 @@ catch_errors
 temp_root="/tmp/pginstall"
 
 
-# # Check if the directory exists
-# if [ -d "$temp_root" ]; then
-#     echo "Directory $temp_root exists. Deleting..."
-#     rm -rf "$temp_root"
-#     echo "Directory $temp_root and its contents have been deleted."
-# else
-#     echo "Directory $temp_root does not exist."
-# fi
+# Check if the directory exists
+if [ -d "$temp_root" ]; then
+    echo "Directory $temp_root exists. Deleting..."
+    rm -rf "$temp_root"
+    echo "Directory $temp_root and its contents have been deleted."
+else
+    echo "Directory $temp_root does not exist."
+fi
  
 # mkdir $temp_root
 
