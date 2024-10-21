@@ -27,6 +27,7 @@ mkdir $temp_root
 FILE1="$temp_root/prevms.txt"
 FILE2="$temp_root/postvms.txt"
 msg_ok "$FILE1"
+
 # -- end defaults --
 sleep 10
 
