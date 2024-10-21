@@ -53,3 +53,28 @@ extra_admin_password() {
     fi
 export $extra_password
 }
+create_user() {
+    local username="$extra_admin"
+    local password="$extra_password"
+
+    # Check if the username and password are provided
+    if [ -z "$username" ] || [ -z "$password" ]; then
+        echo "Username or password is missing."
+        return 1
+    fi
+
+    # Create user with a home directory
+    useradd -m $username
+
+    # Set the user's password
+    echo "$username:$password" | chpasswd
+
+    # Add user to the sudo group
+    usermod -aG sudo $username
+
+    # Allow user to run all commands as root
+    echo "$username ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+    echo "User $username created, added to sudo group, and granted all root privileges."
+}
+
