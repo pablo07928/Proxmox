@@ -4,7 +4,6 @@ echo "v14"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
-echo "222"
 variables
 color
 catch_errors
@@ -24,12 +23,12 @@ fi
  
 mkdir $temp_root
 
-# # Defaults
-# FILE1="$temp_root/prevms.txt"
-# FILE2="$temp_root/postvms.txt"
-# msg_ok "$FILE1"
-# # -- end defaults --
-# sleep 10
+# Defaults
+FILE1="$temp_root/prevms.txt"
+FILE2="$temp_root/postvms.txt"
+msg_ok "$FILE1"
+# -- end defaults --
+sleep 10
 
 # pct list >$FILE1
 # bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
