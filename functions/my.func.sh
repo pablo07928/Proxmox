@@ -37,7 +37,11 @@ extra_admin_account() {
             extra_admin_account
         done
     fi
-     extra_admin_password=$(whiptail --inputbox "Please enter  second admin password:" 8 39 --title "password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+export $extra_admin
+
+}
+extra_admin_password() { 
+     extra_password=$(whiptail --inputbox "Please enter  second admin password:" 8 39 --title "password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
             echo "Operation cancelled. Exiting..."
             exit 1
@@ -47,6 +51,5 @@ extra_admin_account() {
             extra_admin_password
         done
     fi
-export $extra_admin
-export $extra_admin_password
+export $extra_password
 }
