@@ -1,6 +1,6 @@
 #!/bin/bash
 clear
-echo "v11"
+echo "v12"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
@@ -16,9 +16,9 @@ temp_root="/tmp/pginstall"
 # Defaults
 FILE1="$temp_root/prevms.txt"
 FILE2="$temp_root/postvms.txt"
-echo "$FILE1"
+msg_ok "$FILE1"
 # -- end defaults --
-
+sleep 10
 
 pct list >$FILE1
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
