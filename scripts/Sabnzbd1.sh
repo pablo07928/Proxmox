@@ -24,24 +24,24 @@ fi
  
 mkdir $temp_root
 
-# Defaults
-FILE1="$temp_root/prevms.txt"
-FILE2="$temp_root/postvms.txt"
-msg_ok "$FILE1"
-# -- end defaults --
-sleep 10
+# # Defaults
+# FILE1="$temp_root/prevms.txt"
+# FILE2="$temp_root/postvms.txt"
+# msg_ok "$FILE1"
+# # -- end defaults --
+# sleep 10
 
-pct list >$FILE1
-bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
-# Download and execute the AddSharestoLXC.sh script
-pct list >$FILE2
+# pct list >$FILE1
+# bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
+# # Download and execute the AddSharestoLXC.sh script
+# pct list >$FILE2
 
 
 
-msg_ok "finding container"
-current_lxc_id=(find_container_ID $FILE1 $FILE2)
+# msg_ok "finding container"
+# current_lxc_id=(find_container_ID $FILE1 $FILE2)
 
-msg_ok " Container id is: $current_lxc_id"
+# msg_ok " Container id is: $current_lxc_id"
 
 # wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh > $temp_root/AddSharestoLXC.sh
 # bash -c "chmod +x $temp_root/AddSharestoLXC.sh"
