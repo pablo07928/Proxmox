@@ -56,14 +56,14 @@ export $extra_password
 
 
 prepare_folder() {
-    if [ -d "$CONTAINER_INSTALL_FOLDER" ]; then
-        msg_ok "Directory $CONTAINER_INSTALL_FOLDER exists. Deleting..."
-        rm -rf "$CONTAINER_INSTALL_FOLDER"
-        msg_ok "Directory $CONTAINER_INSTALL_FOLDER deleted."
+    if [ -d "$container_install_folder" ]; then
+        msg_ok "Directory $container_install_folder exists. Deleting..."
+        rm -rf "$container_install_folder"
+        msg_ok "Directory $container_install_folder deleted."
     fi
 
-    mkdir -p "$CONTAINER_INSTALL_FOLDER"
-    cp /tmp/*.txt "$CONTAINER_INSTALL_FOLDER"
+    mkdir -p "$container_install_folder"
+    cp /tmp/*.txt "$container_install_folder"
 }
 
 find_container_id(){
