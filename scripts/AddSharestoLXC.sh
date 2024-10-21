@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source <(curl -s https://github.com/pablo07928/Proxmox/raw/main/functions/build.func)
+source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
+
 
 function prompt_lxc_ID {
     id=$(whiptail --inputbox "Please enter the LXC ID:" 8 39 --title "LXC Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
@@ -24,7 +25,7 @@ fi
 
 LXC_CONF="/etc/pve/lxc/$id.conf"
 
-msg_info "Installing Dependencies"
+msg_info "Installing Shares"
 # Add a comment for 'media-shares' if not already present
 if ! grep -q 'media-shares' "$LXC_CONF"; then
     echo '#media-shares' | tee -a "$LXC_CONF"
@@ -49,4 +50,4 @@ fi
 
 echo current_lxc_id=$id>>/etc/pve/lxc/currentid.sh
 
-msg_ok  "finished adding shares"
+msg_ok  "Finished  adding shares"
