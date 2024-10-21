@@ -9,9 +9,17 @@ variables
 color
 catch_errors
 
-mkdir /tmp/pginstall
+
 temp_root="/tmp/pginstall"
 
+if [ -d "$temp_root" ]; then
+    echo "Directory $temp_root exists. Deleting..."
+    rm -rf "$temp_root"
+    echo "Directory $temp_root and its contents have been deleted and will be recreated"
+    
+else
+    echo "Directory $temp_root does not exist creating."
+mkdir $temp_root
 
 # Defaults
 FILE1="$temp_root/prevms.txt"
