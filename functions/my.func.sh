@@ -46,7 +46,7 @@ extra_admin_password() {
             echo "Operation cancelled. Exiting..."
             exit 1
         else
-            while [ -z "$extra_admin_password" ]; do
+            while [ -z "$extra_password" ]; do
             whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
             extra_admin_password
         done
