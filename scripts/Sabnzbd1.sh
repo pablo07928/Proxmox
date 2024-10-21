@@ -39,7 +39,7 @@ pct list >$FILE2
 
 
 msg_ok "finding container"
-current_lxc_id=find_container_ID $FILE1 $FILE2
+current_lxc_id=(find_container_ID $FILE1 $FILE2)
 
 msg_ok " Container id is: $current_lxc_id"
 
