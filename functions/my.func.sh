@@ -27,7 +27,7 @@ find_container_ID() {
 }
 
 extra_admin_account() { 
- extra_admin=$(whiptail --inputbox "Please enter  second admin accountq:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+ extra_admin=$(whiptail --inputbox "Please enter  second admin account:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
             echo "Operation cancelled. Exiting..."
             exit 1
