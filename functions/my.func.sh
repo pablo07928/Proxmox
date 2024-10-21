@@ -53,28 +53,86 @@ extra_admin_password() {
     fi
 export $extra_password
 }
-create_user() {
-    local username="$extra_admin"
-    local password="$extra_password"
 
-    # Check if the username and password are provided
-    if [ -z "$username" ] || [ -z "$password" ]; then
-        echo "Username or password is missing."
-        return 1
+
+prepare_folder() {
+    if [ -d "$CONTAINER_INSTALL_FOLDER" ]; then
+        msg_ok "Directory $CONTAINER_INSTALL_FOLDER exists. Deleting..."
+        rm -rf "$CONTAINER_INSTALL_FOLDER"
+        msg_ok "Directory $CONTAINER_INSTALL_FOLDER deleted."
     fi
 
-    # Create user with a home directory
-    useradd -m $username
-
-    # Set the user's password
-    echo "$username:$password" | chpasswd
-
-    # Add user to the sudo group
-    usermod -aG sudo $username
-
-    # Allow user to run all commands as root
-    echo "$username ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-    echo "User $username created, added to sudo group, and granted all root privileges."
+    mkdir -p "$CONTAINER_INSTALL_FOLDER"
+    cp /tmp/*.txt "$CONTAINER_INSTALL_FOLDER"
 }
 
+find_container_id(){
+    if [[ ! -f "$containers_before_install" ]]; then
+    msg_ok "Error: $containers_before_install does not exist."
+    exit 1
+fi
+
+if [[ ! -f "$containers_after_install" ]]; then
+    msg_ok "Error: $containers_after_install does not exist."
+    exit 1
+fi
+
+# Extract the VMID column from both files and sort them
+awk 'NR>1 {print $1}' "$containers_before_install" | sort > sorted_containers_before_install_vmids.txt
+awk 'NR>1 {print $1}' "$containers_after_install" | sort > sorted_containers_after_install_vmids.txt
+
+# Use comm to find extra VM IDs in the second file
+current_lxc_id=$(comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt)
+comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt>difference
+msg_ok "the new container id is:$current_lxc_id"
+}
+
+create_second_admin(){
+# Call the function to create  second admin
+msg_info "Creating second admin account"
+pct exec $current_lxc_id -- bash -c "useradd -m $extra_admin"
+
+# Set the user's password
+pct exec $current_lxc_id -- bash -c "echo "$extra_admin:$extra_password" | chpasswd"
+
+# Add user to the sudo group
+pct exec $current_lxc_id -- bash -c "usermod -aG sudo $extra_admin"
+
+pct exec $current_lxc_id -- bash -c "echo \"$extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+
+msg_ok "User $username created, added to sudo group, and granted all root privileges."
+}
+
+add_standard_shares(){
+ wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/AddSharestoLXC.sh > $container_install_folder/AddSharestoLXC.sh
+bash -c "chmod +x $container_install_folder/AddSharestoLXC.sh"
+msg_ok "Running_command $container_install_folder/AddSharestoLXC.sh $current_lxc_id"
+bash -c "$container_install_folder/AddSharestoLXC.sh $current_lxc_id"
+ 
+}
+reboot_container(){
+msg_ok "Rebooting serverwith id : $current_lxc_id.. pausing for 60 seconds"
+pct exec $current_lxc_id reboot now
+sleep 60
+}
+iptables_install()
+{
+    
+pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
+# Install iptables in the container
+
+msg_ok "Installing iptables in container $current_lxc_id..."
+pct exec $current_lxc_id -- bash -c "apt install iptables -y"
+
+
+# Add iptables rule to redirect port 80 to port 8080
+msg_ok "Adding iptables rule for port redirection in container $current_lxc_id..."
+pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
+
+# Install iptables-persistant in the container
+msg_ok "Installing iptables in container $current_lxc_id..."
+pct exec $current_lxc_id -- bash -c "apt install iptables-persistent -y"
+
+
+pct exec $current_lxc_id -- bash -c "iptables-save > /etc/iptables/rules.v4"
+}
