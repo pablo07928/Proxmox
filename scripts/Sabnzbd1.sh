@@ -7,16 +7,6 @@ source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/funct
 variables
 color
 catch_errors
-
-    if [ -n "$SPINNER_PID" ]; then
-        # Stop spinner logic here
-        echo "Stopping spinner with PID: $SPINNER_PID"
-        unset SPINNER_PID
-    else
-        echo "Spinner PID is not set."
-    fi
-
-
 temp_root="/tmp/pginstall"
 
 
