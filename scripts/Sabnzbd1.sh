@@ -3,6 +3,7 @@ clear
 echo "v10"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
+source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
 
 variables
 color
@@ -12,8 +13,8 @@ temp_root="/tmp/pginstall"
 
 
 # Defaults
-FILE1="/tmp/prevms.txt"
-FILE2="/tmp/postvms.txt"
+FILE1="$temp_root/prevms.txt"
+FILE2="$temp_root/postvms.txt"
 
 # -- end defaults --
 
@@ -24,7 +25,10 @@ bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
 pct list >$FILE2
 
 
-current_lxc_id=$CTID
+
+
+current_lxc_id=find_container_ID $FILE1 $FILE2
+
 msg_ok " Container id is: $current_lxc_id"
 
 wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh > $temp_root/AddSharestoLXC.sh
