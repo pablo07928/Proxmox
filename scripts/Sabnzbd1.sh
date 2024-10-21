@@ -19,6 +19,7 @@ if [ -d "$temp_root" ]; then
     
 else
     echo "Directory $temp_root does not exist creating."
+fi    
 mkdir $temp_root
 
 # Defaults
