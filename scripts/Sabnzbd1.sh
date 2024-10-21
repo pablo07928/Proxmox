@@ -1,6 +1,6 @@
 #!/bin/bash
 clear
-echo "v10"
+echo "v11"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
@@ -8,6 +8,7 @@ source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/funct
 variables
 color
 catch_errors
+
 mkdir /tmp/pginstall
 temp_root="/tmp/pginstall"
 
@@ -15,7 +16,7 @@ temp_root="/tmp/pginstall"
 # Defaults
 FILE1="$temp_root/prevms.txt"
 FILE2="$temp_root/postvms.txt"
-
+echo "$FILE1"
 # -- end defaults --
 
 
@@ -26,7 +27,7 @@ pct list >$FILE2
 
 
 
-
+msg_ok "finding container id"
 current_lxc_id=find_container_ID $FILE1 $FILE2
 
 msg_ok " Container id is: $current_lxc_id"
