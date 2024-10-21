@@ -1,40 +1,40 @@
 #!/bin/bash
-echo "v10"
-FILE1="/tmp/prevms.txt"
-FILE2="/tmp/postvms.txt"
+echo "v11"
+containers_before_install="/tmp/prevms.txt"
+containers_after_install="/tmp/postvms.txt"
 
-pct list >/tmp/prevms.txt
+pct list >$containers_before_install
 
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/sabnzbd.sh)"
 # Download and execute the AddSharestoLXC.sh script
 
-pct list >/tmp/postvms.txt
+pct list >$containers_after_install
 
 # Define the input files
 # Check if the input files exist
-if [[ ! -f "$FILE1" ]]; then
-    echo "Error: $FILE1 does not exist."
+if [[ ! -f "$containers_before_install" ]]; then
+    echo "Error: $containers_before_install does not exist."
     exit 1
 fi
 
-if [[ ! -f "$FILE2" ]]; then
-    echo "Error: $FILE2 does not exist."
+if [[ ! -f "$containers_after_install" ]]; then
+    echo "Error: $containers_after_install does not exist."
     exit 1
 fi
 
 # Extract the VMID column from both files and sort them
-awk 'NR>1 {print $1}' "$FILE1" | sort > sorted_file1_vmids.txt
-awk 'NR>1 {print $1}' "$FILE2" | sort > sorted_file2_vmids.txt
+awk 'NR>1 {print $1}' "$containers_before_install" | sort > sorted_containers_before_install_vmids.txt
+awk 'NR>1 {print $1}' "$containers_after_install" | sort > sorted_containers_after_install_vmids.txt
 
 # Use comm to find extra VM IDs in the second file
-current_lxc_id=$(comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt)
-comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt>difference
+current_lxc_id=$(comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt)
+comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt>difference
 echo "the new container id is:$current_lxc_id"
 
 #source /tmp/currentid.sh
 
 # Clean up temporary files
-#rm sorted_file1_vmids.txt sorted_file2_vmids.txt
+#rm sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
 
 
 wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/AddSharestoLXC.sh>/tmp/AddSharestoLXC.sh
