@@ -1,6 +1,6 @@
 #!/bin/bash
 clear
-echo "v14"
+echo "v15"
 
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
 source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/my.func.sh)
