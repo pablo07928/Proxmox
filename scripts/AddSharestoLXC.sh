@@ -39,15 +39,15 @@ fi
 if ! grep -q 'mp0: /media/amedia' "$LXC_CONF"; then
     echo 'mp0: /media/amedia/,mp=/media/amedia' | tee -a "$LXC_CONF"
 fi
-sleep 5
+sleep 1
 if ! grep -q 'mp1: /media/media' "$LXC_CONF"; then
     echo 'mp1: /media/media/,mp=/media/media' | tee -a "$LXC_CONF"
 fi
-sleep 5
+sleep 1
 if ! grep -q 'mp2: /media/nzb' "$LXC_CONF"; then
     echo 'mp2: /media/nzb/,mp=/media/nzb' | tee -a "$LXC_CONF"
 fi
-sleep 5
+sleep 1
 if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
     echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
 fi
