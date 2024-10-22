@@ -93,12 +93,33 @@ find_container_id() {
     # Use comm to find extra VM IDs in the second file
     current_lxc_id=$(comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt)
     comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt > difference
+   # Display the new container ID
 
-    # Display the  container ID
     msg_ok "The container ID is: $current_lxc_id"
 }
 
+find_container_id2() {
+    # Check if the input files exist
+    if [[ ! -f "$containers_before_install" ]]; then
+        msg_ok "Error: $containers_before_install does not exist."
+        exit 1
+    fi
 
+    if [[ ! -f "$containers_after_install" ]]; then
+        msg_ok "Error: $containers_after_install does not exist."
+        exit 1
+    fi
+
+    # Extract the VMID column from both files and sort them
+    awk 'NR>1 {print $1}' "$containers_before_install" | sort > sorted_containers_before_install_vmids.txt
+    awk 'NR>1 {print $1}' "$containers_after_install" | sort > sorted_containers_after_install_vmids.txt
+
+    # Return the extra VM IDs in the second file
+    comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
+
+    # Clean up temporary files
+    rm sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
+}
 
 # Function to create a second admin user in the Proxmox container
 create_second_admin() {
