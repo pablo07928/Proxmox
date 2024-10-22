@@ -123,6 +123,7 @@ reboot_container2() {
 
     echo "Rebooting container $container_id..."
     pct reboot $container_id
+    sleep 10
 
     echo "Pinging $container_ip until it's back online..."
     while ! ping -c 1 $container_ip &>/dev/null; do
