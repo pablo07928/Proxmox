@@ -114,8 +114,32 @@ bash -c "$container_install_folder/AddSharestoLXC.sh $current_lxc_id"
 reboot_container(){
 msg_ok "Rebooting serverwith id : $current_lxc_id.. pausing for 60 seconds"
 pct exec $current_lxc_id reboot now
-sleep 60
+
 }
+
+reboot_container2() {
+    local container_id=$1
+    local container_ip=$2
+
+    echo "Rebooting container $container_id..."
+    pct reboot $container_id
+
+    echo "Pinging $container_ip until it's back online..."
+    while ! ping -c 1 $container_ip &>/dev/null; do
+        sleep 2
+    done
+
+    echo "Container $container_id has rebooted successfully and is back online!"
+
+}
+
+get_container_ip() {
+    local container_id=$1
+    local ip=$(pct exec $container_id -- ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+    echo $ip
+}
+
+
 iptables_install()
 {
     
