@@ -1,6 +1,12 @@
-find_container_ID() { 
-    FILE1=$1 
-    FILE2=$2 
+#!/bin/bash
+
+# Function to find the new container ID by comparing two files
+# Parameters:
+#   $1 - File containing the list of VMIDs before installation
+#   $2 - File containing the list of VMIDs after installation
+find_container_ID() {
+    FILE1=$1
+    FILE2=$2
 
     # Check if the input files exist
     if [[ ! -f "$FILE1" ]]; then
@@ -20,145 +26,193 @@ find_container_ID() {
     current_lxc_id=$(comm -13 sorted_file1_vmids.txt sorted_file2_vmids.txt)
     echo "$current_lxc_id" > difference
 
-    echo "the new container id is: $current_lxc_id"
+    # Display the new container ID
+    echo "The new container ID is: $current_lxc_id"
 
     # Clean up temporary files
-    rm sorted_file1_vmids.txt sorted_file2_vmids.txt
+    rm sorted_file1_vmids.txt sorted_file2_vmids.txt difference
 }
 
-extra_admin_account() { 
- extra_admin=$(whiptail --inputbox "Please enter  second admin account:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
-        if [ $? -ne 0 ]; then
-            echo "Operation cancelled. Exiting..."
-            exit 1
-        else
-            while [ -z "$extra_admin" ]; do
-            whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
+# Function to prompt for the second admin account using whiptail
+extra_admin_account() {
+    extra_admin=$(whiptail --inputbox "Please enter the second admin account:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+    if [ $? -ne 0 ]; then
+        echo "Operation cancelled. Exiting..."
+        exit 1
+    else
+        while [ -z "$extra_admin" ]; do
+            whiptail --msgbox "Extra account cannot be blank. Please try again." 8 39 --title "Input Error"
             extra_admin_account
         done
     fi
-export $extra_admin
-
+    export extra_admin
 }
-extra_admin_password() { 
-     extra_password=$(whiptail --inputbox "Please enter  second admin password:" 8 39 --title "password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
-        if [ $? -ne 0 ]; then
-            echo "Operation cancelled. Exiting..."
-            exit 1
-        else
-            while [ -z "$extra_password" ]; do
-            whiptail --msgbox "Extra account cannot be blank1. Please try again." 8 39 --title "Input Error"
+
+# Function to prompt for the second admin password using whiptail
+extra_admin_password() {
+    extra_password=$(whiptail --inputbox "Please enter the second admin password:" 8 39 --title "Password Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
+    if [ $? -ne 0 ]; then
+        echo "Operation cancelled. Exiting..."
+        exit 1
+    else
+        while [ -z "$extra_password" ]; do
+            whiptail --msgbox "Extra account cannot be blank. Please try again." 8 39 --title "Input Error"
             extra_admin_password
         done
     fi
-export $extra_password
+    export extra_password
 }
 
-
-
+# Function to prepare the container installation folder
 prepare_folder() {
     if [ -d "$container_install_folder" ]; then
         msg_ok "Directory $container_install_folder exists. Deleting..."
         rm -rf "$container_install_folder"
         msg_ok "Directory $container_install_folder deleted."
     fi
-
     mkdir -p "$container_install_folder"
-    #cp /tmp/*.txt "$container_install_folder"
+    # cp /tmp/*.txt "$container_install_folder"
 }
 
-find_container_id(){
+# Function to find the new container ID after installation
+find_container_id() {
     if [[ ! -f "$containers_before_install" ]]; then
-    msg_ok "Error: $containers_before_install does not exist."
-    exit 1
-fi
+        msg_ok "Error: $containers_before_install does not exist."
+        exit 1
+    fi
+    if [[ ! -f "$containers_after_install" ]]; then
+        msg_ok "Error: $containers_after_install does not exist."
+        exit 1
+    fi
 
-if [[ ! -f "$containers_after_install" ]]; then
-    msg_ok "Error: $containers_after_install does not exist."
-    exit 1
-fi
+    # Extract the VMID column from both files and sort them
+    awk 'NR>1 {print $1}' "$containers_before_install" | sort > sorted_containers_before_install_vmids.txt
+    awk 'NR>1 {print $1}' "$containers_after_install" | sort > sorted_containers_after_install_vmids.txt
 
-# Extract the VMID column from both files and sort them
-awk 'NR>1 {print $1}' "$containers_before_install" | sort > sorted_containers_before_install_vmids.txt
-awk 'NR>1 {print $1}' "$containers_after_install" | sort > sorted_containers_after_install_vmids.txt
+    # Use comm to find extra VM IDs in the second file
+    current_lxc_id=$(comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt)
+    comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt > difference
 
-# Use comm to find extra VM IDs in the second file
-current_lxc_id=$(comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt)
-comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt>difference
-msg_ok "the new container id is:$current_lxc_id"
+    # Display the new container ID
+    msg_ok "The new container ID is: $current_lxc_id"
 }
 
-create_second_admin(){
-# Call the function to create  second admin
-msg_info "Creating second admin account"
-pct exec $current_lxc_id -- bash -c "useradd -m $extra_admin"
 
-# Set the user's password
-pct exec $current_lxc_id -- bash -c "echo "$extra_admin:$extra_password" | chpasswd"
 
-# Add user to the sudo group
-pct exec $current_lxc_id -- bash -c "usermod -aG sudo $extra_admin"
+# Function to create a second admin user in the Proxmox container
+create_second_admin() {
+    # Notify start of admin creation
+    msg_info "Creating second admin account"
 
-pct exec $current_lxc_id -- bash -c "echo \"$extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+    # Create the user with a home directory
+    pct exec $current_lxc_id -- bash -c "useradd -m $extra_admin"
 
-msg_ok "User $username created, added to sudo group, and granted all root privileges."
+    # Set the user's password
+    pct exec $current_lxc_id -- bash -c "echo \"$extra_admin:$extra_password\" | chpasswd"
+
+    # Add the user to the sudo group
+    pct exec $current_lxc_id -- bash -c "usermod -aG sudo $extra_admin"
+
+    # Allow the user to execute all commands as root without a password
+    pct exec $current_lxc_id -- bash -c "echo \"$extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+
+    # Confirmation message
+    msg_ok "User $extra_admin created, added to sudo group, and granted all root privileges."
 }
 
-add_standard_shares(){
- wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/AddSharestoLXC.sh > $container_install_folder/AddSharestoLXC.sh
-bash -c "chmod +x $container_install_folder/AddSharestoLXC.sh"
-msg_ok "Running_command $container_install_folder/AddSharestoLXC.sh $current_lxc_id"
-bash -c "$container_install_folder/AddSharestoLXC.sh $current_lxc_id"
- 
-}
-reboot_container(){
-msg_ok "Rebooting serverwith id : $current_lxc_id.. pausing for 60 seconds"
-pct exec $current_lxc_id reboot now
+# Function to add standard shares to the container
+add_standard_shares() {
+    # Download the script to add shares to the container
+    wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/AddSharestoLXC.sh > $container_install_folder/AddSharestoLXC.sh
 
+    # Make the script executable
+    bash -c "chmod +x $container_install_folder/AddSharestoLXC.sh"
+
+    # Notify start of script execution
+    msg_ok "Running command $container_install_folder/AddSharestoLXC.sh $current_lxc_id"
+
+    # Execute the script to add shares
+    bash -c "$container_install_folder/AddSharestoLXC.sh $current_lxc_id"
 }
 
+# Function to reboot the Proxmox container
+reboot_container() {
+    # Notify start of reboot process
+    msg_ok "Rebooting server with ID: $current_lxc_id... pausing for 60 seconds"
+
+    # Reboot the container
+    pct exec $current_lxc_id reboot now
+}
+
+
+# Function to reboot a Proxmox container and wait until it's back online
+# Parameters:
+#   $1 - The ID of the container
+#   $2 - The IP address of the container
 reboot_container2() {
     local container_id=$1
     local container_ip=$2
 
+    # Initiate the container reboot
     echo "Rebooting container $container_id..."
     pct reboot $container_id
-    sleep 10
+    sleep 10  # Wait for 10 seconds to allow the reboot process to initiate
 
+    # Ping the container until it's back online
     echo "Pinging $container_ip until it's back online..."
     while ! ping -c 1 $container_ip &>/dev/null; do
-        sleep 2
+        sleep 2  # Ping every 2 seconds to check if the container is back online
     done
 
+    # Confirmation message
     echo "Container $container_id has rebooted successfully and is back online!"
-
 }
 
+
+
+# Function to get the IP address of a Proxmox container
+# Parameters:
+#   $1 - The ID of the container
 get_container_ip() {
     local container_id=$1
+
+    # Use Proxmox command to get the IP address of the container
+    # The command fetches the IP address assigned to eth0 and uses grep to extract it
     local ip=$(pct exec $container_id -- ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-    echo $ip
+
 }
 
 
-iptables_install()
-{
-    
-pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
-# Install iptables in the container
+# Function to install and configure iptables within a Proxmox container
+# Parameters:
+#   $1 - Port number to redirect to (default is 8080)
+iptables_install() {
+    local port=${1:-8080}
 
-msg_ok "Installing iptables in container $current_lxc_id..."
-pct exec $current_lxc_id -- bash -c "apt install iptables -y"
+    # Update SABnzbd service configuration
+    # Change the service start command to listen on all IPs without specifying the port
+    pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
 
+    # Install iptables in the container
+    # This ensures the iptables package is available for setting up firewall rules
+    msg_ok "Installing iptables in container $current_lxc_id..."
+    pct exec $current_lxc_id -- bash -c "apt install iptables -y"
 
-# Add iptables rule to redirect port 80 to port 8080
-msg_ok "Adding iptables rule for port redirection in container $current_lxc_id..."
-pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
+    # Add iptables rule to redirect port 80 to the specified port
+    # This sets up a rule to forward traffic from port 80 to the given port
+    msg_ok "Adding iptables rule for port redirection in container $current_lxc_id to port $port..."
+    pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port $port"
 
-# Install iptables-persistant in the container
-msg_ok "Installing iptables in container $current_lxc_id..."
-pct exec $current_lxc_id -- bash -c "apt install iptables-persistent -y"
+    # Install iptables-persistent in the container
+    # This package ensures the iptables rules are saved and loaded on reboot
+    msg_ok "Installing iptables-persistent in container $current_lxc_id..."
+    pct exec $current_lxc_id -- bash -c "apt install iptables-persistent -y"
 
-
-pct exec $current_lxc_id -- bash -c "iptables-save > /etc/iptables/rules.v4"
+    # Save the iptables rules
+    # Save the current iptables rules to the configuration file for persistence
+    pct exec $current_lxc_id -- bash -c "iptables-save > /etc/iptables/rules.v4"
 }
+
+# Example usage
+# Call the function with a specific port or let it default to 8080
+# iptables_install 8080  # Or pass any other port as needed
