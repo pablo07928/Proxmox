@@ -30,7 +30,7 @@ find_container_ID() {
     echo "The new container ID is: $current_lxc_id"
 
     # Clean up temporary files
-    rm sorted_file1_vmids.txt sorted_file2_vmids.txt difference
+    #rm sorted_file1_vmids.txt sorted_file2_vmids.txt difference
 }
 
 # Function to prompt for the second admin account using whiptail
@@ -118,7 +118,7 @@ find_container_id2() {
     comm -13 sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
 
     # Clean up temporary files
-    rm sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
+    #rm sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
 }
 
 # Function to create a second admin user in the Proxmox container
