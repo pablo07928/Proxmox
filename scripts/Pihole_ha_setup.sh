@@ -5,8 +5,7 @@ clear
 container_install_folder="/tmp/Cont_inst"
 containers_before_install="$container_install_folder/prevms.txt"
 containers_after_install="$container_install_folder/postvms.txt"
-base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole1.sh"
-base_build_target2="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole2.sh"
+base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
 #application_port="8080"
 
 load_functions() {
@@ -24,12 +23,6 @@ base_build() {
     bash -c "$(wget -qLO - $base_build_target)"
     msg_ok "saving containers after"
     pct list >$containers_after_install
-}
-
-base_build2() {
-    pct list >$containers_before_install
-bash -c "$(wget -qLO - $base_build_target2)"
-pct list >$containers_after_install
 }
 
 
