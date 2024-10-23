@@ -40,7 +40,8 @@ pct exec $current_lxc_id -- bash -c 'if [ -f /root/.sabnzbd/sabnzbd.ini_new ]; t
 pct exec $current_lxc_id cp /media/scripts/sabnzbd/sabnzbd.ini /root/.sabnzbd/sabnzbd.ini_new
 pct exec $current_lxc_id cp /root/.sabnzbd/sabnzbd.ini_new /root/.sabnzbd/sabnzbd.ini
 sleep 20
-
+pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
+# Install iptables in the container
 
 # Start sabnzbd service
 msg_ok "Starting sabnzbd service in container $current_lxc_id..."
