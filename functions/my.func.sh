@@ -193,7 +193,7 @@ reboot_container2() {
     sleep 10  # Wait for 10 seconds to allow the reboot process to initiate
 
     # Ping the container until it's back online
-    msg_info "Pinging $container_ip until it's back online..."
+    #msg_info "Pinging $container_ip until it's back online..."
     while ! ping -c 1 $container_ip &>/dev/null; do
         sleep 2  # Ping every 2 seconds to check if the container is back online
     done
