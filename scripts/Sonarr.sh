@@ -25,6 +25,7 @@ pct list >$containers_after_install
 
 configure_application(){
     local local_container_id=$1
+    local local_extra_admin_user=$2
 
 pct exec $local_container_id -- bash -c "systemctl stop sonarr"
 sleep 10
@@ -32,8 +33,8 @@ pct exec $local_container_id -- bash -c "cd /var/lib/sonarr"
 pct exec $local_container_id -- bash -c "mv /var/lib/sonarr/sonarr.db /var/lib/sonarr/sonarr.db.old"
 pct exec $local_container_id -- bash -c "mv /var/lib/sonarr/config.xml /var/lib/sonarr/config.xml.old"
 pct exec $local_container_id -- bash -c "unzip -o /media/scripts/sonarr/backups/sonarr_backup*.zip -d /var/lib/sonarr "
-pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users /var/lib/sonarr/config.xml"
-pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users /var/lib/sonarr/sonarr.db"
+pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/sonarr/config.xml"
+pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/sonarr/sonarr.db"
 pct exec $local_container_id -- bash -c "systemctl start sonarr"
 }
 
@@ -53,7 +54,7 @@ create_second_admin $container_id $extra_admin_user $extra_admin_pw
 add_standard_shares2 $container_id
 reboot_container2 $container_id $container_ip
 iptables_install $container_id $application_port
-configure_application $container_id
+configure_application $container_id $extra_admin_user
 reboot_container2 $container_id $container_ip
 msg_ok "The ip for the new server is: $container_ip"
 msg_ok "Server is running on port 80 and on $application_port "
