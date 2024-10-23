@@ -268,40 +268,80 @@ iptables_install() {
 # Function to add standard shares to the container
 # Parameters:
 #   $1 - The LXC container id
-add_standard_shares2() {
-    local Container_id=$1
+# add_standard_shares2() {
+#     local Container_id=$1
 
-    LXC_CONF="/etc/pve/lxc/$container_id.conf"
+#     LXC_CONF="/etc/pve/lxc/$container_id.conf"
+
+#     msg_info "Installing Shares"
+
+#     # Add a comment for 'media-shares' if not already present
+#     if ! grep -q 'media-shares' "$LXC_CONF"; then
+#         echo '# media-shares' | tee -a "$LXC_CONF"
+#     fi
+
+#     # Check each mount point and append if not present
+#     if ! grep -q 'mp0: /media/amedia' "$LXC_CONF"; then
+#         echo 'mp0: /media/amedia/,mp=/media/amedia' | tee -a "$LXC_CONF"
+#     fi
+#     sleep 1
+
+#     if ! grep -q 'mp1: /media/media' "$LXC_CONF"; then
+#         echo 'mp1: /media/media/,mp=/media/media' | tee -a "$LXC_CONF"
+#     fi
+#     sleep 1
+
+#     if ! grep -q 'mp2: /media/nzb' "$LXC_CONF"; then
+#         echo 'mp2: /media/nzb/,mp=/media/nzb' | tee -a "$LXC_CONF"
+#     fi
+#     sleep 1
+
+#     if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
+#         echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
+#     fi
+
+#     # Write the current container ID to a script for reference
+#     echo current_lxc_id=$id >> /etc/pve/lxc/currentid.sh
+
+#     msg_ok "Finished adding shares"
+# }
+
+
+# Function to add standard shares to the container
+# Parameters:
+#   $1 - The LXC container ID
+add_standard_shares2() {
+    local container_id=$1
+    local LXC_CONF="/etc/pve/lxc/$container_id.conf"
 
     msg_info "Installing Shares"
 
     # Add a comment for 'media-shares' if not already present
     if ! grep -q 'media-shares' "$LXC_CONF"; then
-        echo '# media-shares' | tee -a "$LXC_CONF"
+        tee -a "$LXC_CONF" <<< '# media-shares'
     fi
 
     # Check each mount point and append if not present
     if ! grep -q 'mp0: /media/amedia' "$LXC_CONF"; then
-        echo 'mp0: /media/amedia/,mp=/media/amedia' | tee -a "$LXC_CONF"
+        tee -a "$LXC_CONF" <<< 'mp0: /media/amedia/,mp=/media/amedia'
     fi
     sleep 1
 
     if ! grep -q 'mp1: /media/media' "$LXC_CONF"; then
-        echo 'mp1: /media/media/,mp=/media/media' | tee -a "$LXC_CONF"
+        tee -a "$LXC_CONF" <<< 'mp1: /media/media/,mp=/media/media'
     fi
     sleep 1
 
     if ! grep -q 'mp2: /media/nzb' "$LXC_CONF"; then
-        echo 'mp2: /media/nzb/,mp=/media/nzb' | tee -a "$LXC_CONF"
+        tee -a "$LXC_CONF" <<< 'mp2: /media/nzb/,mp=/media/nzb'
     fi
     sleep 1
 
     if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
-        echo 'mp3: /media/scripts/,mp=/media/scripts' | tee -a "$LXC_CONF"
+        tee -a "$LXC_CONF" <<< 'mp3: /media/scripts/,mp=/media/scripts'
     fi
 
     # Write the current container ID to a script for reference
-    echo current_lxc_id=$id >> /etc/pve/lxc/currentid.sh
+    tee -a /etc/pve/lxc/currentid.sh <<< "current_lxc_id=$container_id"
 
-    msg_ok "Finished adding shares"
 }
