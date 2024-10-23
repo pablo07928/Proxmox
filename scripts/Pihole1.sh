@@ -31,7 +31,7 @@ catch_errors
 function default_settings() {
   CT_TYPE="1"
   PW=""
-  CT_ID=$NEXTID
+  CT_ID=150
   HN=$NSAPP
   DISK_SIZE="$var_disk"
   CORE_COUNT="$var_cpu"
@@ -69,4 +69,3 @@ description
 msg_ok "Completed Successfully!\n"
 echo -e "${APP} should be reachable by going to the following URL.
          ${BL}http://${IP}/admin${CL} \n"
-         
