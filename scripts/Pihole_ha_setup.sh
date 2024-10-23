@@ -5,8 +5,8 @@ clear
 container_install_folder="/tmp/Cont_inst"
 containers_before_install="$container_install_folder/prevms.txt"
 containers_after_install="$container_install_folder/postvms.txt"
-#base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
-base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole1.sh"
+base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
+#base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole1.sh"
 #application_port="8080"
 
 load_functions() {
@@ -58,7 +58,7 @@ base_build
 container_id=$(find_container_id2)
 container_ip=$(get_container_ip $container_id)
 msg_ok "Container ID = $container_id  Container IP = $container_ip"
-sleep 15
+
 
 msg_ok "installing PIhole 2"
 base_build
@@ -92,7 +92,7 @@ reboot_container2 $container_id $container_ip
 
 msg_ok "Reboot Pihole1"
 reboot_container2 $container_id2 $container_ip
-
+exit 0
 pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
 pct exec $local_container_id -- bash -c "sudo chmod +x pihole-gemini"
 
