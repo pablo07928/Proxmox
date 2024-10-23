@@ -200,8 +200,10 @@ get_container_ip() {
 
     # Use Proxmox command to get the IP address of the container
     # The command fetches the IP address assigned to eth0 and uses grep to extract it
-    local ip=$(pct exec $container_id -- ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-
+    ip=$(pct exec $container_id -- ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+    
+    # Return the IP address
+    echo $ip
 }
 
 
