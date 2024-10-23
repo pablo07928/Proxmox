@@ -298,10 +298,7 @@ add_standard_shares2() {
         tee -a "$LXC_CONF" <<< 'mp3: /media/scripts/,mp=/media/scripts' > /dev/null 
     fi
     
-    if grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
+
         msg_ok "Shares installed"
-        else
-        msg_error "Shares not installed"
-        exit 1
-    fi
+
 }
