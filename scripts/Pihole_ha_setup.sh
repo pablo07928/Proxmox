@@ -87,11 +87,17 @@ add_standard_shares2 $container_id
 msg_ok "Adding shares to Pihole1"
 add_standard_shares2 $container_id2
 
+pct exec $local_container_id -- bash -c "pihole -a -p $extra_admin_pw"
+pct exec $local_container_id2 -- bash -c "pihole -a -p $extra_admin_pw"
+
 msg_ok "Reboot Pihole1"
 reboot_container2 $container_id $container_ip
 
 msg_ok "Reboot Pihole1"
 reboot_container2 $container_id2 $container_ip
+
+
+
 exit 0
 pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
 pct exec $local_container_id -- bash -c "sudo chmod +x pihole-gemini"
