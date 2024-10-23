@@ -170,13 +170,13 @@ add_standard_shares() {
 }
 
 # Function to reboot the Proxmox container
-reboot_container() {
-    # Notify start of reboot process
-    msg_ok "Rebooting server with ID: $current_lxc_id... pausing for 60 seconds"
+# reboot_container() {
+#     # Notify start of reboot process
+#     msg_ok "Rebooting server with ID: $current_lxc_id... pausing for 60 seconds"
 
-    # Reboot the container
-    pct exec $current_lxc_id reboot now
-}
+#     # Reboot the container
+#     pct exec $current_lxc_id reboot now
+# }
 
 
 # Function to reboot a Proxmox container and wait until it's back online
@@ -188,18 +188,18 @@ reboot_container2() {
     local container_ip=$2
 
     # Initiate the container reboot
-    echo "Rebooting container $container_id..."
+    msg_info "Rebooting container $container_id..."
     pct reboot $container_id
     sleep 10  # Wait for 10 seconds to allow the reboot process to initiate
 
     # Ping the container until it's back online
-    echo "Pinging $container_ip until it's back online..."
+    msg_info "Pinging $container_ip until it's back online..."
     while ! ping -c 1 $container_ip &>/dev/null; do
         sleep 2  # Ping every 2 seconds to check if the container is back online
     done
 
     # Confirmation message
-    echo "Container $container_id has rebooted successfully and is back online!"
+    msg_ok "Container $container_id has rebooted successfully and is back online!"
 }
 
 
@@ -233,7 +233,7 @@ iptables_install() {
     # Install iptables in the container
     # This ensures the iptables package is available for setting up firewall rules
     msg_ok "Installing iptables in container $local_container..."
-    pct exec $local_container -- bash -c "apt install iptables -y > /dev/null"
+    pct exec $local_container -- bash -c "apt install iptables -y > /dev/null 2>/dev/null"
 
     # Add iptables rule to redirect port 80 to the specified port
     # This sets up a rule to forward traffic from port 80 to the given port
@@ -249,7 +249,7 @@ iptables_install() {
     msg_ok "Installing iptables-persistent in container $local_container..."
     pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v4 boolean true |  debconf-set-selections"
     pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections"
-    pct exec $local_container -- bash -c "apt install iptables-persistent -y > /dev/null"
+    pct exec $local_container -- bash -c "apt install iptables-persistent -y > /dev/null 2>/dev/null"
 
     # Save the iptables rules
     # Save the current iptables rules to the configuration file for persistence
@@ -272,7 +272,7 @@ iptables_install() {
 add_standard_shares2() {
     local container_id=$1
     local LXC_CONF="/etc/pve/lxc/$container_id.conf"
-    msg_info" installing Shares"
+    msg_info "installing Shares"
     # Add a comment for 'media-shares' if not already present
     if ! grep -q 'media-shares' "$LXC_CONF" > /dev/null ; then
         tee -a "$LXC_CONF" <<< '# media-shares' > /dev/null 
