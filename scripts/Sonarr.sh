@@ -32,8 +32,8 @@ pct exec $local_container_id -- bash -c "cd /var/lib/sonarr"
 pct exec $local_container_id -- bash -c "mv /var/lib/sonarr/sonarr.db /var/lib/sonarr/sonarr.db.old"
 pct exec $local_container_id -- bash -c "mv /var/lib/sonarr/config.xml /var/lib/sonarr/config.xml.old"
 pct exec $local_container_id -- bash -c "unzip -o /media/scripts/sonarr/backups/sonarr_backup*.zip -d /var/lib/sonarr "
-pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users config.xml"
-pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users sonarr.db"
+pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users /var/lib/sonarr/config.xml"
+pct exec $local_container_id -- bash -c "sudo chown gonzapa1:users /var/lib/sonarr/sonarr.db"
 pct exec $local_container_id -- bash -c "systemctl start sonarr"
 }
 
