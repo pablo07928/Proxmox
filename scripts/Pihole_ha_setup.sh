@@ -88,16 +88,43 @@ reboot_container2 $container_id $container_ip
 msg_ok "Reboot Pihole1"
 reboot_container2 $container_id2 $container_ip
 
-pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/AddSharestoLXC.sh > $container_install_folder/AddSharestoLXC.sh"
+pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $local_container_id -- bash -c "sudo chmod +x pihole-gemini"
+
+pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Slave.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $local_container_id2 -- bash -c "sudo chmod +x pihole-gemini"
+
+msg_ok "generate ssh Key Pihole1"
+pct exec $local_container_id -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
+pct exec $local_container_id -- bash -c "ssh-copy-id root@10.0.254.251"
 
 
-#iptables_install $container_id $application_port
-#configure_application $container_id $extra_admin_user
-#reboot_container2 $container_id $container_ip
-#msg_ok "The ip for the new server is: $container_ip"
-#msg_ok "Server is running on port 80 and on $application_port "
+msg_ok "generate ssh Key Pihole2"
+pct exec $local_container_id2 -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
+pct exec $local_container_id -- bash -c "ssh-copy-id root@10.0.254.250"
+
+pct exec $local_container_id -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
+pct exec $local_container_id2 -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
 
 
+pct exec $local_container_id -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+pct exec $local_container_id2 -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+
+pct exec $local_container_id -- bash -c "apt update && sudo apt install keepalived libipset3 -y"
+pct exec $local_container_id -- bash -c "systemctl enable keepalived.service"
+
+pct exec $local_container_id2 -- bash -c "apt update && sudo apt install keepalived libipset3 -y"
+pct exec $local_container_id2 -- bash -c "systemctl enable keepalived.service"
+
+pct exec $local_container_id1 -- bash -c "mkdir /etc/scripts"
+pct exec $local_container_id2 -- bash -c "mkdir /etc/scripts"
+
+pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+
+pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedM.conf> /etc/keepalived/keepalived.conf"
+pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedS.conf> /etc/keepalived/keepalived.conf"
 
 
-
+pct exec $local_container_id -- bash -c "systemctl restart keepalived.service"
+pct exec $local_container_id2 -- bash -c "systemctl restart keepalived.service"
