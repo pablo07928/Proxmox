@@ -20,7 +20,7 @@ load_functions() {
 base_build() {
     msg_ok "saving containers before"
     pct list >$containers_before_install
-    msg_ok "starting pihole 1 install"
+    msg_ok "starting pihole 1 install:      bash -c $(wget -qLO - $base_build_target)"
     bash -c "$(wget -qLO - $base_build_target)"
     msg_ok "saving containers after"
     pct list >$containers_after_install
