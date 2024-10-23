@@ -1,6 +1,6 @@
 #!/bin/bash
 #for debugging uncomment the next line
-set +x
+#set +x
 
 clear
 # Constant Definitions
