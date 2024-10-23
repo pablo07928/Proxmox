@@ -47,7 +47,7 @@ SCRIPTVER="pihole-gemini v0.0.2.2a"
  
 # USER-DEFINED VARIABLES - END - Edits made below this line may break the script.
 # ---------------------------------------------------------------------------------------------------------
- 
+  
 # SCRIPT VARIABLES - START - These values are used by the script and should not be changed manually.
  
     # List of files to sync

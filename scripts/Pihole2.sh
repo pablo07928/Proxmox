@@ -28,6 +28,7 @@ variables
 color
 catch_errors
 
+
 function default_settings() {
   CT_TYPE="1"
   PW=""

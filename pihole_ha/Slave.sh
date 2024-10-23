@@ -155,6 +155,7 @@ SCRIPTVER="pihole-gemini v0.0.2.2a"
         fi
 # SSH CONNECTION TEST - END
  
+ 
 # UPDATE REMOTE PIHOLE - START
     if [ $RUNUPDATE -eq 1 ]; then
     echo "--------------------------------------------------------------------------------------------" 2>&1 | tee -a $LOGFILE
