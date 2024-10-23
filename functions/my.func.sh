@@ -272,32 +272,36 @@ iptables_install() {
 add_standard_shares2() {
     local container_id=$1
     local LXC_CONF="/etc/pve/lxc/$container_id.conf"
-
-    msg_info "Installing Shares"
-
+    msg_info" installing Shares"
     # Add a comment for 'media-shares' if not already present
-    if ! grep -q 'media-shares' "$LXC_CONF"; then
-        tee -a "$LXC_CONF" <<< '# media-shares'
+    if ! grep -q 'media-shares' "$LXC_CONF" > /dev/null ; then
+        tee -a "$LXC_CONF" <<< '# media-shares' > /dev/null 
     fi
 
     # Check each mount point and append if not present
-    if ! grep -q 'mp0: /media/amedia' "$LXC_CONF"; then
-        tee -a "$LXC_CONF" <<< 'mp0: /media/amedia/,mp=/media/amedia'
+    if ! grep -q 'mp0: /media/amedia' "$LXC_CONF" > /dev/null ; then
+        tee -a "$LXC_CONF" <<< 'mp0: /media/amedia/,mp=/media/amedia' > /dev/null 
     fi
     sleep 1
 
-    if ! grep -q 'mp1: /media/media' "$LXC_CONF"; then
-        tee -a "$LXC_CONF" <<< 'mp1: /media/media/,mp=/media/media'
+    if ! grep -q 'mp1: /media/media' "$LXC_CONF" > /dev/null ; then
+        tee -a "$LXC_CONF" <<< 'mp1: /media/media/,mp=/media/media' > /dev/null 
     fi
     sleep 1
 
-    if ! grep -q 'mp2: /media/nzb' "$LXC_CONF"; then
-        tee -a "$LXC_CONF" <<< 'mp2: /media/nzb/,mp=/media/nzb'
+    if ! grep -q 'mp2: /media/nzb' "$LXC_CONF" > /dev/null ; then
+        tee -a "$LXC_CONF" <<< 'mp2: /media/nzb/,mp=/media/nzb' > /dev/null 
     fi
     sleep 1
 
-    if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
-        tee -a "$LXC_CONF" <<< 'mp3: /media/scripts/,mp=/media/scripts'
+    if ! grep -q 'mp3: /media/scripts' "$LXC_CONF" > /dev/null ; then
+        tee -a "$LXC_CONF" <<< 'mp3: /media/scripts/,mp=/media/scripts' > /dev/null 
     fi
-    msg_ok "Shares added to container"
+    
+    if grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
+        msg_ok "Shares installed"
+        else
+        msg_error "Shares not installed"
+        exit 1
+    fi
 }
