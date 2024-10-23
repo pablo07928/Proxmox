@@ -29,12 +29,11 @@ configure_application(){
 
 pct exec $local_container_id -- bash -c "systemctl stop whisparr"
 sleep 10
-pct exec $local_container_id -- bash -c "cd /var/lib/whisparr"
-pct exec $local_container_id -- bash -c "mv /var/lib/whisparr/whisparr.db /var/lib/whisparr/whisparr.db.old"
+pct exec $local_container_id -- bash -c "mv /var/lib/whisparr/whisparr2.db /var/lib/whisparr/whisparr2.db.old"
 pct exec $local_container_id -- bash -c "mv /var/lib/whisparr/config.xml /var/lib/whisparr/config.xml.old"
 pct exec $local_container_id -- bash -c "unzip -o /media/scripts/whisparr/backups/whisparr_backup*.zip -d /var/lib/whisparr "
 pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/whisparr/config.xml"
-pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/whisparr/whisparr.db"
+pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/whisparr/whisparr2.db"
 pct exec $local_container_id -- bash -c "systemctl start whisparr"
 }
 
