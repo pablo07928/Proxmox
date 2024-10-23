@@ -21,3 +21,8 @@ bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/Ra
 Whisparr install:
 
 bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/Whisparr.sh)"
+
+
+pihole install:
+
+bash -c "$(wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/Pihole_ha_setup.sh)"
