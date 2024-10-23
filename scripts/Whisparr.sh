@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 clear
 # Constant Definitions
 container_install_folder="/tmp/Cont_inst"
