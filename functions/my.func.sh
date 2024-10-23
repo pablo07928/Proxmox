@@ -232,17 +232,23 @@ iptables_install() {
 
     # Install iptables in the container
     # This ensures the iptables package is available for setting up firewall rules
-    msg_ok "Installing iptables in container $current_lxc_id..."
+    msg_ok "Installing iptables in container $local_container..."
     pct exec $local_container -- bash -c "apt install iptables -y"
 
     # Add iptables rule to redirect port 80 to the specified port
     # This sets up a rule to forward traffic from port 80 to the given port
-    msg_ok "Adding iptables rule for port redirection in container $current_lxc_id to port $port..."
+    msg_ok "Adding iptables rule for port redirection in container $local_container to port $port..."
     pct exec $local_container -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port $port"
+
+
+
+
 
     # Install iptables-persistent in the container
     # This package ensures the iptables rules are saved and loaded on reboot
-    msg_ok "Installing iptables-persistent in container $current_lxc_id..."
+    msg_ok "Installing iptables-persistent in container $local_container..."
+    pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v4 boolean true |  debconf-set-selections"
+    pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections"
     pct exec $local_container -- bash -c "apt install iptables-persistent -y"
 
     # Save the iptables rules
