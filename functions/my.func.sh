@@ -233,7 +233,7 @@ iptables_install() {
     # Install iptables in the container
     # This ensures the iptables package is available for setting up firewall rules
     msg_ok "Installing iptables in container $local_container..."
-    pct exec $local_container -- bash -c "apt install iptables -y"
+    pct exec $local_container -- bash -c "apt install iptables -y > /dev/null"
 
     # Add iptables rule to redirect port 80 to the specified port
     # This sets up a rule to forward traffic from port 80 to the given port
@@ -249,7 +249,7 @@ iptables_install() {
     msg_ok "Installing iptables-persistent in container $local_container..."
     pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v4 boolean true |  debconf-set-selections"
     pct exec $local_container -- bash -c "echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections"
-    pct exec $local_container -- bash -c "apt install iptables-persistent -y"
+    pct exec $local_container -- bash -c "apt install iptables-persistent -y > /dev/null"
 
     # Save the iptables rules
     # Save the current iptables rules to the configuration file for persistence
