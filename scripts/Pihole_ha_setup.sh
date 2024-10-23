@@ -56,11 +56,15 @@ prepare_folder
 extra_admin_user=$(extra_admin_account)
 extra_admin_pw=$(extra_admin_password)
 
+
+
+
 msg_ok "installing PIhole 1"
 base_build
 container_id=$(find_container_id2)
 container_ip=$(get_container_ip $container_id)
-
+msg_ok "Container ID = $container_id  Container IP = $container_ip"
+sleep 15
 
 msg_ok "installing PIhole 2"
 base_build2
@@ -69,6 +73,7 @@ container_ip2=$(get_container_ip $container_id)
 
 msg_ok "Container ID = $container_id  Container IP = $container_ip"
 msg_ok "Container ID = $container_id2  Container IP = $container_ip2"
+
 msg_ok " create_second_admin on container id:$container_id User Name: $extra_admin_user Password: $extra_admin_pw"
 
 msg_ok "Creating second admin on Pihole1"
