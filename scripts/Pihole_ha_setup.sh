@@ -60,7 +60,7 @@ msg_ok "Container ID = $container_id  Container IP = $container_ip"
 sleep 15
 
 msg_ok "installing PIhole 2"
-base_build2
+base_build
 container_id2=$(find_container_id2)
 container_ip2=$(get_container_ip $container_id)
 
