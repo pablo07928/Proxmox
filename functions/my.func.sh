@@ -34,6 +34,8 @@ find_container_ID() {
 }
 
 # Function to prompt for the second admin account using whiptail
+# Returns:
+#   The entered admin account
 extra_admin_account() {
     extra_admin=$(whiptail --inputbox "Please enter the second admin account:" 8 39 --title "Account Input" --cancel-button Exit-Script 3>&1 1>&2 2>&3)
     if [ $? -ne 0 ]; then
@@ -45,8 +47,12 @@ extra_admin_account() {
             extra_admin_account
         done
     fi
-    echo $extra_admin
+    echo "$extra_admin"
 }
+
+
+
+
 
 # Function to prompt for the second admin password using whiptail
 extra_admin_password() {
@@ -60,7 +66,7 @@ extra_admin_password() {
             extra_admin_password
         done
     fi
-    echo $extra_password
+    echo "$extra_password"
 }
 
 # Function to create a second admin user in the Proxmox container
@@ -257,6 +263,7 @@ iptables_install() {
 #   $1 - The LXC container id
 add_standard_shares2() {
     local Container_id=$1
+
     LXC_CONF="/etc/pve/lxc/$container_id.conf"
 
     msg_info "Installing Shares"
