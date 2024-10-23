@@ -5,7 +5,8 @@ clear
 container_install_folder="/tmp/Cont_inst"
 containers_before_install="$container_install_folder/prevms.txt"
 containers_after_install="$container_install_folder/postvms.txt"
-base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
+#base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
+base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/Pihole1.sh"
 #application_port="8080"
 
 load_functions() {
