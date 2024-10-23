@@ -340,8 +340,5 @@ add_standard_shares2() {
     if ! grep -q 'mp3: /media/scripts' "$LXC_CONF"; then
         tee -a "$LXC_CONF" <<< 'mp3: /media/scripts/,mp=/media/scripts'
     fi
-
-    # Write the current container ID to a script for reference
-    tee -a /etc/pve/lxc/currentid.sh <<< "current_lxc_id=$container_id"
-
+    msg_ok "Shares added to container"
 }
