@@ -5,8 +5,8 @@ clear
 container_install_folder="/tmp/Cont_inst"
 containers_before_install="$container_install_folder/prevms.txt"
 containers_after_install="$container_install_folder/postvms.txt"
-base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/Pihole1.sh"
-base_build_target2="https://github.com/tteck/Proxmox/raw/main/ct/Pihole2.sh"
+base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole1.sh"
+base_build_target2="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole2.sh"
 #application_port="8080"
 
 load_functions() {
@@ -19,8 +19,8 @@ load_functions() {
 
 base_build() {
     pct list >$containers_before_install
-bash -c "$(wget -qLO - $base_build_target)"
-pct list >$containers_after_install
+    bash -c "$(wget -qLO - $base_build_target)"
+    pct list >$containers_after_install
 }
 
 base_build2() {
@@ -46,15 +46,18 @@ pct exec $local_container_id -- bash -c "systemctl start whisparr"
 
  
 
-
+msg_ok "load functions"
 load_functions
+msg_ok "prepare folder"
 prepare_folder
 extra_admin_user=$(extra_admin_account)
 extra_admin_pw=$(extra_admin_password)
+
 msg_ok "installing PIhole 1"
 base_build
 container_id=$(find_container_id2)
 container_ip=$(get_container_ip $container_id)
+
 
 msg_ok "installing PIhole 2"
 base_build2
