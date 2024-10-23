@@ -223,30 +223,31 @@ get_container_ip() {
 # Parameters:
 #   $1 - Port number to redirect to (default is 8080)
 iptables_install() {
-    local port=${1:-8080}
+     local local_container=$1
+    local port=${2:-8080}
 
     # Update SABnzbd service configuration
     # Change the service start command to listen on all IPs without specifying the port
-    pct exec $current_lxc_id -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
+    #pct exec $local_container -- bash -c "sed -i 's|ExecStart=python3 SABnzbd.py -s 0.0.0.0:7777|ExecStart=python3 SABnzbd.py -s 0.0.0.0|' /etc/systemd/system/sabnzbd.service"
 
     # Install iptables in the container
     # This ensures the iptables package is available for setting up firewall rules
     msg_ok "Installing iptables in container $current_lxc_id..."
-    pct exec $current_lxc_id -- bash -c "apt install iptables -y"
+    pct exec $local_container -- bash -c "apt install iptables -y"
 
     # Add iptables rule to redirect port 80 to the specified port
     # This sets up a rule to forward traffic from port 80 to the given port
     msg_ok "Adding iptables rule for port redirection in container $current_lxc_id to port $port..."
-    pct exec $current_lxc_id -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port $port"
+    pct exec $local_container -- bash -c "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port $port"
 
     # Install iptables-persistent in the container
     # This package ensures the iptables rules are saved and loaded on reboot
     msg_ok "Installing iptables-persistent in container $current_lxc_id..."
-    pct exec $current_lxc_id -- bash -c "apt install iptables-persistent -y"
+    pct exec $local_container -- bash -c "apt install iptables-persistent -y"
 
     # Save the iptables rules
     # Save the current iptables rules to the configuration file for persistence
-    pct exec $current_lxc_id -- bash -c "iptables-save > /etc/iptables/rules.v4"
+    pct exec $local_container -- bash -c "iptables-save > /etc/iptables/rules.v4"
 }
 
 # Example usage
