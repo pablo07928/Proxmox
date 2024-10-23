@@ -45,7 +45,7 @@ extra_admin_account() {
             extra_admin_account
         done
     fi
-    export extra_admin
+    echo $extra_admin
 }
 
 # Function to prompt for the second admin password using whiptail
@@ -60,7 +60,32 @@ extra_admin_password() {
             extra_admin_password
         done
     fi
-    export extra_password
+    echo $extra_password
+}
+
+# Function to create a second admin user in the Proxmox container
+create_second_admin() {
+    local local_container_id=$1
+    local local_extra_admin=$2
+    local local_extra_password=$3
+    
+    # Notify start of admin creation
+    msg_info "Creating second admin account"
+
+    # Create the user with a home directory
+    pct exec $local_container_id -- bash -c "useradd -m $local_extra_admin"
+
+    # Set the user's password
+    pct exec $local_container_id -- bash -c "echo \"$local_extra_admin:$local_extra_password\" | chpasswd"
+
+    # Add the user to the sudo group
+    pct exec $local_container_id -- bash -c "usermod -aG sudo $local_extra_admin"
+
+    # Allow the user to execute all commands as root without a password
+    pct exec $local_container_id -- bash -c "echo \"$local_extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+
+    # Confirmation message
+    msg_ok "User $local_extra_admin created, added to sudo group, and granted all root privileges."
 }
 
 # Function to prepare the container installation folder
@@ -121,26 +146,7 @@ find_container_id2() {
     #rm sorted_containers_before_install_vmids.txt sorted_containers_after_install_vmids.txt
 }
 
-# Function to create a second admin user in the Proxmox container
-create_second_admin() {
-    # Notify start of admin creation
-    msg_info "Creating second admin account"
 
-    # Create the user with a home directory
-    pct exec $current_lxc_id -- bash -c "useradd -m $extra_admin"
-
-    # Set the user's password
-    pct exec $current_lxc_id -- bash -c "echo \"$extra_admin:$extra_password\" | chpasswd"
-
-    # Add the user to the sudo group
-    pct exec $current_lxc_id -- bash -c "usermod -aG sudo $extra_admin"
-
-    # Allow the user to execute all commands as root without a password
-    pct exec $current_lxc_id -- bash -c "echo \"$extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
-
-    # Confirmation message
-    msg_ok "User $extra_admin created, added to sudo group, and granted all root privileges."
-}
 
 # Function to add standard shares to the container
 add_standard_shares() {
