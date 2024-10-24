@@ -125,20 +125,62 @@ pct exec $container_id -- bash -c "sshpass -p $extra_admin_pw ssh-copy-id -o Str
 
 #msg_info "generate ssh Key or Pihole2 and copy to Pihole1"
 pct exec $container_id2 -- bash -c "ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -q -N ''"
-pct exec $container_id2 -- bash -c "sshpass -p $extra_admin_pw ssh-copy-id -o StrictHostKeyChecking=no root@$container_ip"
+pct exec $container_id2 -- bash -c "ssh-copy-id -o StrictHostKeyChecking=no root@$container_ip"
 
-pct exec $container_id -- bash -c "sudo -u $replication_account ssh-keygen -y -t rsa -b 4096 -f /home/$replication_account/.ssh/id_rsa -q -N ''"
-pct exec $container_id2 -- bash -c "sudo -u $replication_account ssh-keygen -y -t rsa -b 4096 -f /home/$replication_account/.ssh/id_rsa -q -N ''"
-pct exec $container_id -- bash -c "sshpass -p $extra_admin_pw sudo -u $replication_account ssh-copy-id -o StrictHostKeyChecking=no $replication_account@$container_id2"
+#msg_ok "generated ssh Key for Pihole2 and copied  to Pihole1"
 
 
+exit 0
 
-pct exec $container_id -- bash -c "mkdir /REPLICATION_SCRIPTS"
-pct exec $container_id2 -- bash -c "mkdir /REPLICATION_SCRIPTS"
+#msg_info "Downloading mster script"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $container_id -- bash -c " chmod +x /etc/pihole/pihole-gemini.sh"
+#msg_ok "Download succesfull"
 
-pct exec $container_id -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
-pct exec $container_id2 -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
 
-sed -i 's/PIHOLE2= #IP of 2nd PiHole/PIHOLddE2= #IP of 2nd PiHoleddd/' file1
-pct exec $container_id -- bash -c "sed -i "s/PIHOLE2= #IP of 2nd PiHole/$container_ip2/" /REPLICATION_SCRIPTS/piholesync.rsync.sh"
-pct exec $container_id2 -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+#msg_info "Downloading slave script"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Slave.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $container_id2 -- bash -c " chmod +x /etc/pihole/pihole-gemini.sh"
+#msg_ok "Download succesfull"
+
+
+#msg_info "backing up original gravity script on both servers"
+pct exec $container_id -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
+pct exec $container_id2 -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
+#msg_ok "backed up original gravity script on both servers"
+
+#msg_info "modifying gravity script on both servers"
+pct exec $container_id -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+pct exec $container_id2 -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+#msg_ok "modified gravity script on both servers"
+
+#msg_info "installing keepalive service on pihole1"
+pct exec $container_id -- bash -c "apt update && apt install keepalived libipset3 -y"
+pct exec $container_id -- bash -c "systemctl enable keepalived.service"
+#msg_ok "keepalive service installed on Pihole 1"
+
+#msg_info "installing keepalive service on pihole2"
+pct exec $container_id2 -- bash -c "apt update &&  apt install keepalived libipset3 -y"
+pct exec $container_id2 -- bash -c "systemctl enable keepalived.service"
+#msg_ok "keepalive service installed on Pihole 2"
+
+#msg_info "creating /etc/scripts on  both servers"
+pct exec $container_id1 -- bash -c "mkdir /etc/scripts"
+pct exec $container_id2 -- bash -c "mkdir /etc/scripts"
+#msg_ok "folders created"
+
+#msg_info "downloading /etc/scripts/chk_ftl on  both servers"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+#msg_ok "downloaded /etc/scripts/chk_ftl on both servers"
+
+#msg_info "downloading /etc/keepalived/keepalived.conf on  both servers"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedM.conf> /etc/keepalived/keepalived.conf"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedS.conf> /etc/keepalived/keepalived.conf"
+#msg_ok "downloaded /etc/keepalived/keepalived.conf on both servers"
+
+
+#msg_info "restarting keepalive on both servers"
+pct exec $container_id -- bash -c "systemctl restart keepalived.service"
+pct exec $container_id2 -- bash -c "systemctl restart keepalived.service"
+#msg_ok "Keepalive service restarted on both servers"
