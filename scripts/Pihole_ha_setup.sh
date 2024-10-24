@@ -10,12 +10,18 @@ base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
 #application_port="8080"
 replication_account=holereplication
 
+
+
+defaults_to_load() {
+replication_account=holereplication
 extra_admin_user=gonzapa1
 extra_admin_pw=AnaCheP11
 container_id=1500
 container_ip=10.0.254.250
 container_id2=1510
 container_ip2=10.0.254.251
+}
+
 
 load_functions() {
     source <(curl -s https://raw.githubusercontent.com/pablo07928/Proxmox/main/functions/build.func)
