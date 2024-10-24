@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 #VARS
 FILES=(black.list blacklist.txt regex.list whitelist.txt mydomain.lan.list dhcp.leases) #list of files you want to sync
 PIHOLEDIR=/etc/pihole #working dir of pihole
