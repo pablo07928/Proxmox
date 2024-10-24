@@ -28,17 +28,17 @@ base_build() {
 
 
 configure_application(){
-    local local_container_id=$1
-    local local_extra_admin_user=$2
+    local container_id=$1
+    local extra_admin_user=$2
 
-pct exec $local_container_id -- bash -c "systemctl stop whisparr"
+pct exec $container_id -- bash -c "systemctl stop whisparr"
 sleep 10
-pct exec $local_container_id -- bash -c "mv /var/lib/whisparr/whisparr2.db /var/lib/whisparr/whisparr2.db.old"
-pct exec $local_container_id -- bash -c "mv /var/lib/whisparr/config.xml /var/lib/whisparr/config.xml.old"
-pct exec $local_container_id -- bash -c "unzip -o /media/scripts/whisparr/backups/whisparr_backup*.zip -d /var/lib/whisparr "
-pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/whisparr/config.xml"
-pct exec $local_container_id -- bash -c "sudo chown $local_extra_admin_user:users /var/lib/whisparr/whisparr2.db"
-pct exec $local_container_id -- bash -c "systemctl start whisparr"
+pct exec $container_id -- bash -c "mv /var/lib/whisparr/whisparr2.db /var/lib/whisparr/whisparr2.db.old"
+pct exec $container_id -- bash -c "mv /var/lib/whisparr/config.xml /var/lib/whisparr/config.xml.old"
+pct exec $container_id -- bash -c "unzip -o /media/scripts/whisparr/backups/whisparr_backup*.zip -d /var/lib/whisparr "
+pct exec $container_id -- bash -c " chown $extra_admin_user:users /var/lib/whisparr/config.xml"
+pct exec $container_id -- bash -c " chown $extra_admin_user:users /var/lib/whisparr/whisparr2.db"
+pct exec $container_id -- bash -c "systemctl start whisparr"
 }
 
 extra_admin_user=gonzapa1
@@ -93,8 +93,8 @@ msg_ok "prepare folder"
 # msg_ok "Adding shares to Pihole1"
 # add_standard_shares2 $container_id2
 
-# pct exec $local_container_id -- bash -c "pihole -a -p $extra_admin_pw"
-# pct exec $local_container_id2 -- bash -c "pihole -a -p $extra_admin_pw"
+# pct exec $container_id -- bash -c "pihole -a -p $extra_admin_pw"
+# pct exec $container_id2 -- bash -c "pihole -a -p $extra_admin_pw"
 
 # msg_ok "Reboot Pihole1"
 # reboot_container2 $container_id $container_ip
@@ -103,64 +103,65 @@ msg_ok "prepare folder"
 # reboot_container2 $container_id2 $container_ip2
 
 msg_info "Downloading mster script"
-pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
-pct exec $local_container_id -- bash -c "sudo chmod +x pihole-gemini"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $container_id -- bash -c " chmod +x /etc/pihole/pihole-gemini.sh"
 msg_ok "Download succesfull"
 
 
 msg_info "Downloading slave script"
-pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Slave.sh > /etc/pihole/pihole-gemini.sh"
-pct exec $local_container_id2 -- bash -c "sudo chmod +x pihole-gemini"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Slave.sh > /etc/pihole/pihole-gemini.sh"
+pct exec $container_id2 -- bash -c " chmod +x /etc/pihole/pihole-gemini.sh"
 msg_ok "Download succesfull"
 
 
+$$   ended here fingerptin not copying 
 msg_info "generate ssh Key Pihole1 and copy to pihole2"
-pct exec $local_container_id -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
-pct exec $local_container_id -- bash -c "ssh-copy-id root@10.0.254.251"
+pct exec $container_id -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
+pct exec $container_id -- bash -c "ssh-copy-id root@10.0.254.251"
 msg_ok "generated ssh Key Pihole1 and copied  to Pihole2"
 
 msg_info "generate ssh Key or Pihole2 and copy to Pihole1"
-pct exec $local_container_id2 -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
-pct exec $local_container_id -- bash -c "ssh-copy-id root@10.0.254.250"
+pct exec $container_id2 -- bash -c 'ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N ""'
+pct exec $container_id -- bash -c "ssh-copy-id root@10.0.254.250"
 msg_ok "generated ssh Key for Pihole2 and copied  to Pihole1"
 
 msg_info "backing up original gravity script on both servers"
-pct exec $local_container_id -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
-pct exec $local_container_id2 -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
+pct exec $container_id -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
+pct exec $container_id2 -- bash -c "cp /opt/pihole/gravity.sh /opt/pihole/gravity.sh.bak"
 msg_ok "backed up original gravity script on both servers"
 
 msg_info "modifying gravity script on both servers"
-pct exec $local_container_id -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
-pct exec $local_container_id2 -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+pct exec $container_id -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
+pct exec $container_id2 -- bash -c 'awk '\''/\"\$\{PIHOLE_COMMAND\}\" status/{print "su -c /usr/local/bin/pihole-gemini - pi"}1'\'' /opt/pihole/gravity.sh > temp && mv temp /opt/pihole/gravity.sh'
 msg_ok "modified gravity script on both servers"
 
 msg_info "installing keepalive service on pihole1"
-pct exec $local_container_id -- bash -c "apt update && apt install keepalived libipset3 -y"
-pct exec $local_container_id -- bash -c "systemctl enable keepalived.service"
+pct exec $container_id -- bash -c "apt update && apt install keepalived libipset3 -y"
+pct exec $container_id -- bash -c "systemctl enable keepalived.service"
 msg_ok "keepalive service installed on Pihole 1"
 
 msg_info "installing keepalive service on pihole2"
-pct exec $local_container_id2 -- bash -c "apt update &&  apt install keepalived libipset3 -y"
-pct exec $local_container_id2 -- bash -c "systemctl enable keepalived.service"
+pct exec $container_id2 -- bash -c "apt update &&  apt install keepalived libipset3 -y"
+pct exec $container_id2 -- bash -c "systemctl enable keepalived.service"
 msg_ok "keepalive service installed on Pihole 2"
 
 msg_info "creating /etc/scripts on  both servers"
-pct exec $local_container_id1 -- bash -c "mkdir /etc/scripts"
-pct exec $local_container_id2 -- bash -c "mkdir /etc/scripts"
+pct exec $container_id1 -- bash -c "mkdir /etc/scripts"
+pct exec $container_id2 -- bash -c "mkdir /etc/scripts"
 msg_ok "folders created"
 
 msg_info "downloading /etc/scripts/chk_ftl on  both servers"
-pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
-pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/chk_ftl> /etc/scripts/chk_ftl"
 msg_ok "downloaded /etc/scripts/chk_ftl on both servers"
 
 msg_info "downloading /etc/keepalived/keepalived.conf on  both servers"
-pct exec $local_container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedM.conf> /etc/keepalived/keepalived.conf"
-pct exec $local_container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedS.conf> /etc/keepalived/keepalived.conf"
+pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedM.conf> /etc/keepalived/keepalived.conf"
+pct exec $container_id2 -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/keepalivedS.conf> /etc/keepalived/keepalived.conf"
 msg_ok "downloaded /etc/keepalived/keepalived.conf on both servers"
 
 
 msg_info "restarting keepalive on both servers"
-pct exec $local_container_id -- bash -c "systemctl restart keepalived.service"
-pct exec $local_container_id2 -- bash -c "systemctl restart keepalived.service"
+pct exec $container_id -- bash -c "systemctl restart keepalived.service"
+pct exec $container_id2 -- bash -c "systemctl restart keepalived.service"
 msg_ok "Keepalive service restarted on both servers"

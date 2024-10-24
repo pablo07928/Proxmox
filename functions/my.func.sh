@@ -76,7 +76,7 @@ create_second_admin() {
     local local_extra_password=$3
     
     # Notify start of admin creation
-    msg_info "Creating second admin account"
+    #msg_info "Creating second admin account"
 
     # Create the user with a home directory
     pct exec $local_container_id -- bash -c "useradd -m $local_extra_admin"
@@ -91,7 +91,7 @@ create_second_admin() {
     pct exec $local_container_id -- bash -c "echo \"$local_extra_admin ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
 
     # Confirmation message
-    msg_ok "User $local_extra_admin created, added to sudo group, and granted all root privileges."
+    #msg_ok "User $local_extra_admin created, added to sudo group, and granted all root privileges."
 }
 
 # Function to prepare the container installation folder
