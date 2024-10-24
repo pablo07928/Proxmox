@@ -9,10 +9,12 @@ base_build_target="https://github.com/tteck/Proxmox/raw/main/ct/pihole.sh"
 #base_build_target="https://raw.githubusercontent.com/pablo07928/Proxmox/main/scripts/Pihole1.sh"
 #application_port="8080"
 replication_account=holereplication
+cron_job="*/5 * * * * /bin/bash /root/piholesync.rsync.sh"
 
 
 
 defaults_to_load() {
+cron_job="*/5 * * * * /bin/bash /root/piholesync.rsync.sh"
 replication_account=holereplication
 extra_admin_user=gonzapa1
 extra_admin_pw=AnaCheP11
@@ -103,8 +105,8 @@ add_standard_shares2 $container_id
 add_standard_shares2 $container_id2
 
 #msg_info "restarting keepalive on both servers"
-pct exec $container_id -- bash -c "apt install -y sshpass"
-pct exec $container_id2 -- bash -c "apt install -y sshpass"
+pct exec $container_id -- bash -c "apt install -y sshpass rsync"
+pct exec $container_id2 -- bash -c "apt install -y sshpass rsync"
 #msg_ok "Keepalive service restarted on both servers"
 
 #pct exec $container_id -- bash -c "pihole -a -p $extra_admin_pw"
@@ -138,11 +140,17 @@ pct exec $container_id2 -- bash -c "mkdir /REPLICATION_SCRIPTS"
 pct exec $container_id -- bash -c "chmod 755 /REPLICATION_SCRIPTS"
 pct exec $container_id2 -- bash -c "chmod 755 /REPLICATION_SCRIPTS"
 
-https://raw.githubusercontent.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh 
 
-pct exec $container_id -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
-pct exec $container_id2 -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
 
-sed -i 's/PIHOLE2= #IP of 2nd PiHole/PIHOLddE2= #IP of 2nd PiHoleddd/' file1
-pct exec $container_id -- bash -c "sed -i "s/PIHOLE2= #IP of 2nd PiHole/$container_ip2/" /REPLICATION_SCRIPTS/piholesync.rsync.sh"
-pct exec $container_id2 -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+pct exec $container_id -- bash -c " wget -qLO - https://raw.githubusercontent.com/pablo07928/Proxmox/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+pct exec $container_id2 -- bash -c " wget -qLO - https://raw.githubusercontent.com/pablo07928/Proxmox/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+pct exec $container_id -- bash -c "chmod 755 /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+pct exec $container_id2 -- bash -c "chmod 755 /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+
+
+
+pct exec $container_id -- bash -c "sed -i 's|PIHOLE2= #IP of 2nd PiHole|PIHOLE2=$container_ip2|' /REPLICATION_SCRIPTS/piholesync.rsync.sh"
+
+pct exec $container_id -- bash -c "(crontab -l 2>/dev/null; echo '$cron_job') | crontab -"
+
+
