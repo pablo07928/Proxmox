@@ -52,55 +52,58 @@ container_ip2=10.0.254.251
 msg_ok "load functions"
 load_functions
 msg_ok "prepare folder"
-# prepare_folder
-# extra_admin_user=$(extra_admin_account)
-# extra_admin_pw=$(extra_admin_password)
+prepare_folder
+extra_admin_user=$(extra_admin_account)
+extra_admin_pw=$(extra_admin_password)
 
 
 
 
-# msg_ok "installing PIhole 1"
-# base_build
-# container_id=$(find_container_id2)
-# container_ip=$(get_container_ip $container_id)
-# msg_ok "Container ID = $container_id  Container IP = $container_ip"
+msg_ok "installing PIhole 1"
+base_build
+container_id=$(find_container_id2)
+container_ip=$(get_container_ip $container_id)
+msg_ok "Container ID = $container_id  Container IP = $container_ip"
 
 
-# msg_ok "installing PIhole 2"
-# base_build
-# container_id2=$(find_container_id2)
-# container_ip2=$(get_container_ip $container_id)
+msg_ok "installing PIhole 2"
+base_build
+container_id2=$(find_container_id2)
+container_ip2=$(get_container_ip $container_id)
 
-# msg_ok "Container ID = $container_id  Container IP = $container_ip"
-# msg_ok "Container ID = $container_id2  Container IP = $container_ip2"
+msg_ok "Container ID = $container_id  Container IP = $container_ip"
+msg_ok "Container ID = $container_id2  Container IP = $container_ip2"
 
-# msg_ok " create_second_admin on container id:$container_id User Name: $extra_admin_user Password: $extra_admin_pw"
+msg_ok " create_second_admin on container id:$container_id User Name: $extra_admin_user Password: $extra_admin_pw"
 
-# msg_ok "Creating second admin on Pihole1"
-# create_second_admin $container_id $extra_admin_user $extra_admin_pw
-# msg_ok "Creating replication account on Pihole1"
-# create_second_admin $container_id holereplication $extra_admin_pw
-
-
-# msg_ok "Creating second admin on Pihole2"
-# create_second_admin $container_id2 $extra_admin_user $extra_admin_pw
-# msg_ok "Creating replication account on Pihole2"
-# create_second_admin $container_id holereplication $extra_admin_pw
+msg_ok "Creating second admin on Pihole1"
+create_second_admin $container_id $extra_admin_user $extra_admin_pw
+msg_ok "Creating replication account on Pihole1"
+create_second_admin $container_id holereplication $extra_admin_pw
 
 
-# msg_ok "Adding shares to Pihole1"
-# add_standard_shares2 $container_id
-# msg_ok "Adding shares to Pihole1"
-# add_standard_shares2 $container_id2
+msg_ok "Creating second admin on Pihole2"
+create_second_admin $container_id2 $extra_admin_user $extra_admin_pw
+msg_ok "Creating replication account on Pihole2"
+create_second_admin $container_id2 holereplication $extra_admin_pw
 
-# pct exec $container_id -- bash -c "pihole -a -p $extra_admin_pw"
-# pct exec $container_id2 -- bash -c "pihole -a -p $extra_admin_pw"
 
-# msg_ok "Reboot Pihole1"
-# reboot_container2 $container_id $container_ip
+msg_ok "Adding shares to Pihole1"
+add_standard_shares2 $container_id
+msg_ok "Adding shares to Pihole1"
+add_standard_shares2 $container_id2
 
-# msg_ok "Reboot Pihole1"
-# reboot_container2 $container_id2 $container_ip2
+pct exec $container_id -- bash -c "pihole -a -p $extra_admin_pw"
+pct exec $container_id2 -- bash -c "pihole -a -p $extra_admin_pw"
+
+msg_ok "Reboot Pihole1"
+reboot_container2 $container_id $container_ip
+
+msg_ok "Reboot Pihole1"
+reboot_container2 $container_id2 $container_ip2
+
+
+exit0
 
 msg_info "Downloading mster script"
 pct exec $container_id -- bash -c "wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/scripts/pihole_ha/Master.sh > /etc/pihole/pihole-gemini.sh"
