@@ -130,11 +130,15 @@ pct exec $container_id2 -- bash -c "sshpass -p $extra_admin_pw ssh-copy-id -o St
 pct exec $container_id -- bash -c "sudo -u $replication_account ssh-keygen -y -t rsa -b 4096 -f /home/$replication_account/.ssh/id_rsa -q -N ''"
 pct exec $container_id2 -- bash -c "sudo -u $replication_account ssh-keygen -y -t rsa -b 4096 -f /home/$replication_account/.ssh/id_rsa -q -N ''"
 pct exec $container_id -- bash -c "sshpass -p $extra_admin_pw sudo -u $replication_account ssh-copy-id -o StrictHostKeyChecking=no $replication_account@$container_id2"
-
+ 
 
 
 pct exec $container_id -- bash -c "mkdir /REPLICATION_SCRIPTS"
 pct exec $container_id2 -- bash -c "mkdir /REPLICATION_SCRIPTS"
+pct exec $container_id -- bash -c "chmod 755 /REPLICATION_SCRIPTS"
+pct exec $container_id2 -- bash -c "chmod 755 /REPLICATION_SCRIPTS"
+
+https://raw.githubusercontent.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh 
 
 pct exec $container_id -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
 pct exec $container_id2 -- bash -c " wget -qLO - https://github.com/pablo07928/Proxmox/raw/main/pihole_ha/piholesync.rsync.sh > /REPLICATION_SCRIPTS/piholesync.rsync.sh"
